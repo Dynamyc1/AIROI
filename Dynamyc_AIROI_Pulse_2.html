@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamyc — AI ROI Accountability</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F2340;--navy-mid:#1E3A5F;--navy-light:#2D5282;
+  --emerald:#059669;--emerald-light:#D1FAE5;
+  --amber:#D97706;--amber-light:#FEF3C7;
+  --red:#DC2626;--red-light:#FEE2E2;
+  --purple:#7C3AED;--purple-light:#EDE9FE;--purple-mid:#5B21B6;
+  --teal:#0D9488;--teal-light:#CCFBF1;
+  --blue:#2563EB;--blue-light:#DBEAFE;
+  --slate:#64748B;--slate-light:#F1F5F9;
+  --border:#E2E8F0;--text:#1E293B;--text-muted:#64748B;
+  --sidebar-w:252px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.1),0 8px 32px rgba(0,0,0,0.06);
+  --gold:#B45309;--gold-light:#FEF3C7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#F8FAFC;color:var(--text);display:flex;min-height:100vh;font-size:14px}
+
+/* ── SIDEBAR ── */
+#sidebar{width:var(--sidebar-w);background:var(--navy);min-height:100vh;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sidebar-brand{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.brand-logo{display:flex;align-items:center;gap:10px}
+.brand-icon{width:34px;height:34px;background:linear-gradient(135deg,#7C3AED,#0EA5E9);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-family:'DM Serif Display',serif;font-weight:700;font-size:15px;flex-shrink:0;box-shadow:0 0 16px rgba(124,58,237,0.4)}
+.brand-name{font-family:'DM Serif Display',serif;font-size:20px;color:white;letter-spacing:-0.3px;line-height:1}
+.brand-tag{font-size:9.5px;margin-top:3px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;background:linear-gradient(90deg,#A5B4FC,#7DD3FC);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.int-status-box{margin:12px 12px 0;padding:10px 12px;background:rgba(13,148,136,0.12);border:1px solid rgba(13,148,136,0.25);border-radius:8px}
+.int-status-label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px}
+.int-row{display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11.5px;font-weight:500;color:rgba(255,255,255,0.7)}
+.int-row:last-child{margin-bottom:0}
+.int-dot{width:6px;height:6px;border-radius:50%;background:#2DD4BF;flex-shrink:0;box-shadow:0 0 4px rgba(45,212,191,0.6);animation:pdot 2s ease-in-out infinite}
+.int-dot.dim{background:rgba(255,255,255,0.2);box-shadow:none;animation:none}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:0.4}}
+.sidebar-nav{padding:14px 12px;flex:1;overflow-y:auto}
+.nav-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.28);letter-spacing:1px;text-transform:uppercase;padding:0 8px;margin:14px 0 5px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;color:rgba(255,255,255,0.58);cursor:pointer;transition:all 0.15s;font-size:13px;font-weight:500;margin-bottom:2px;position:relative}
+.nav-item:hover{background:rgba(255,255,255,0.07);color:white}
+.nav-item.active{background:rgba(255,255,255,0.11);color:white}
+.nav-item .icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{position:absolute;right:10px;background:var(--red);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.07);font-size:10.5px;color:rgba(255,255,255,0.28);display:flex;justify-content:space-between;align-items:center}
+.health-pill{background:rgba(5,150,105,0.2);border:1px solid rgba(5,150,105,0.4);border-radius:12px;padding:2px 8px;font-size:10px;font-weight:700;color:#6EE7B7}
+
+/* ── MAIN ── */
+#main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:white;border-bottom:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px}
+.topbar-left{display:flex;flex-direction:column}
+.topbar-title{font-size:24px;font-weight:700;color:var(--navy);font-family:'DM Serif Display',serif;letter-spacing:-0.4px;line-height:1.1}
+.topbar-sub{font-size:14px;color:var(--text-muted);margin-top:4px;font-weight:500}
+.topbar-center{flex:1;max-width:420px}
+.board-toggle{display:flex;align-items:center;gap:9px;background:var(--slate-light);border-radius:22px;padding:7px 18px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text-muted);border:1px solid var(--border);transition:all 0.2s}
+.board-toggle.active{background:var(--navy);color:white;border-color:var(--navy)}
+.board-toggle .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:0.6}
+.topbar-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;border:none}
+.btn-primary{background:var(--navy-mid);color:white}.btn-primary:hover{background:var(--navy)}
+.btn-outline{background:white;color:var(--navy-mid);border:1.5px solid var(--border)}.btn-outline:hover{border-color:var(--navy-mid)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-purple{background:var(--purple);color:white}.btn-purple:hover{background:var(--purple-mid)}
+.btn-gold{background:#92400E;color:white}.btn-gold:hover{background:#78350F}
+.page{padding:24px 28px;display:none}.page.active{display:block}
+
+/* ── CARDS ── */
+.card{background:white;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.card-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13.5px;font-weight:600;color:var(--text)}
+.card-body{padding:18px}
+
+/* ── HEALTH SCORE CARD ── */
+.health-score-card{background:linear-gradient(125deg,#0F2340 0%,#1E3A5F 45%,#3B0764 100%);border-radius:14px;padding:22px 26px;color:white;display:flex;align-items:center;gap:24px;margin-bottom:20px;box-shadow:0 10px 40px rgba(15,35,64,0.18);position:relative;overflow:hidden}
+.health-score-card::before{content:'';position:absolute;top:-30%;right:-5%;width:55%;height:170%;background:radial-gradient(ellipse at center,rgba(124,58,237,0.12) 0%,transparent 75%);pointer-events:none}
+.health-score-card>*{position:relative;z-index:1}
+.health-score-ring{position:relative;width:90px;height:90px;flex-shrink:0}
+.health-score-ring svg{transform:rotate(-90deg)}
+.health-ring-bg{fill:none;stroke:rgba(255,255,255,0.12);stroke-width:8}
+.health-ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
+.health-score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.health-score-num span:first-child{font-family:'DM Serif Display',serif;font-size:26px;font-weight:700;color:white;line-height:1}
+.health-score-num span:last-child{font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-top:1px}
+.health-details{flex:1}
+.health-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px}
+.health-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.health-metric{text-align:center}
+.health-metric-val{font-size:18px;font-weight:700;font-family:'DM Serif Display',serif;color:white}
+.health-metric-val.warn{color:#FCD34D}
+.health-metric-val.danger{color:#FCA5A5}
+.health-metric-val.good{color:#6EE7B7}
+.health-metric-lbl{font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px;letter-spacing:0.3px}
+
+/* ── CAPITAL AT RISK ── */
+.capital-banner{background:linear-gradient(90deg,#450A0A,#7F1D1D);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.capital-at-risk-num{font-size:26px;font-weight:700;font-family:'DM Serif Display',serif;color:#FCA5A5;white-space:nowrap}
+
+/* ── AI INSIGHT CARD ── */
+.ai-card{background:linear-gradient(135deg,#1E1148,#2D1B69 50%,#1E3A5F);border-radius:12px;border:1px solid rgba(124,58,237,0.3);padding:18px;color:white;position:relative;overflow:hidden;margin-bottom:16px}
+.ai-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.ai-chip{background:rgba(124,58,237,0.5);border:1px solid rgba(167,139,250,0.4);border-radius:20px;padding:3px 10px;font-size:10.5px;font-weight:700;color:#C4B5FD;letter-spacing:0.5px;text-transform:uppercase}
+.ai-pulse{width:8px;height:8px;border-radius:50%;background:#A78BFA;animation:aip 1.5s ease-in-out infinite;flex-shrink:0}
+@keyframes aip{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.75)}}
+.ai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ai-item{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:11px 12px;cursor:pointer;transition:all 0.2s}
+.ai-item:hover{background:rgba(255,255,255,0.12);border-color:rgba(167,139,250,0.4)}
+.ai-type{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px}
+.ai-type-critical{color:#FCA5A5}.ai-type-warning{color:#FCD34D}.ai-type-opportunity{color:#6EE7B7}
+.ai-title-sm{font-size:12px;font-weight:600;color:white;margin-bottom:3px;line-height:1.4}
+.ai-sub-sm{font-size:11px;color:rgba(255,255,255,0.55)}
+.ai-link-sm{margin-top:6px;font-size:10.5px;font-weight:600;color:#A78BFA}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi-card{background:white;border-radius:12px;border:1px solid var(--border);padding:18px;box-shadow:var(--shadow)}
+.kpi-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px}
+.kpi-value{font-size:26px;font-weight:700;color:var(--navy);margin:5px 0 3px;font-family:'DM Serif Display',serif}
+.kpi-value.positive{color:var(--emerald)}.kpi-value.negative{color:var(--red)}.kpi-value.warn{color:var(--amber)}
+.kpi-change{font-size:11.5px;color:var(--text-muted)}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-green{background:var(--emerald-light);color:#065F46}
+.badge-amber{background:var(--amber-light);color:#92400E}
+.badge-red{background:var(--red-light);color:#991B1B}
+.badge-slate{background:#F1F5F9;color:#475569}
+.badge-blue{background:var(--blue-light);color:#1E40AF}
+.badge-purple{background:var(--purple-light);color:var(--purple-mid)}
+.badge-gold{background:#FEF3C7;color:#92400E}
+.badge-teal{background:var(--teal-light);color:#115E59}
+
+/* ── DRIFT BADGES ── */
+.drift-up{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:12px;font-size:11px;font-weight:700;background:var(--emerald-light);color:#065F46}
+.drift-dn{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:12px;font-size:11px;font-weight:700;background:var(--red-light);color:#991B1B}
+.drift-fl{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:12px;font-size:11px;font-weight:700;background:var(--slate-light);color:#475569}
+
+/* ── TABLES ── */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;padding:9px 13px;font-size:10.5px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;background:var(--slate-light);border-bottom:1px solid var(--border)}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s}
+tbody tr:hover{background:#FAFBFD}
+tbody tr:last-child{border-bottom:none}
+td{padding:11px 13px;font-size:13px;vertical-align:middle}
+.td-name{font-weight:600;color:var(--text);cursor:pointer}
+.td-name:hover{color:var(--navy-mid);text-decoration:underline}
+
+/* ── PROGRESS / PVR ── */
+.progress-wrap{background:var(--border);border-radius:4px;height:7px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px}
+.pvr-bar{position:relative;height:22px;background:#BFDBFE;border-radius:6px;overflow:hidden;margin-bottom:3px}
+.pvr-planned{display:none}
+.pvr-realized{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#86EFAC,#4ADE80);border-radius:6px;z-index:1;box-shadow:inset 0 -1px 0 rgba(6,95,70,0.15)}
+.pvr-bar-label{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10.5px;font-weight:800;color:#1E3A8A;white-space:nowrap;z-index:2;pointer-events:none;letter-spacing:0.2px}
+
+/* ── INITIATIVE LAYER ── */
+.initiative-card{background:white;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden}
+.initiative-header{padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:background 0.1s}
+.initiative-header:hover{background:#FAFBFD}
+.initiative-expand{width:20px;height:20px;border-radius:50%;background:var(--slate-light);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:transform 0.2s}
+.initiative-expand.open{transform:rotate(90deg)}
+.initiative-projects{display:none;border-top:1px solid var(--border);background:var(--slate-light)}
+.initiative-projects.open{display:block}
+.initiative-kpi{text-align:right}
+.initiative-kpi-val{font-size:18px;font-weight:700;font-family:'DM Serif Display',serif}
+.initiative-kpi-lbl{font-size:10px;color:var(--text-muted);margin-top:1px}
+
+/* ── BUSINESS CASE ── */
+.scenario-tabs{display:flex;gap:4px;margin-bottom:16px}
+.scenario-tab{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:white;color:var(--text-muted);transition:all 0.15s}
+.scenario-tab.active.base{background:var(--navy-mid);color:white;border-color:var(--navy-mid)}
+.scenario-tab.active.best{background:var(--emerald);color:white;border-color:var(--emerald)}
+.scenario-tab.active.worst{background:var(--red);color:white;border-color:var(--red)}
+
+/* ── RISK SIGNALS ── */
+.risk-item{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);transition:background 0.1s}
+.risk-item:hover{background:#FAFBFD}
+.risk-item:last-child{border-bottom:none}
+.risk-icon-wrap{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.risk-critical{background:var(--red-light)}.risk-high{background:var(--amber-light)}.risk-medium{background:#FEF3C7}.risk-low{background:var(--slate-light)}
+
+/* ── RESOLUTION ACTIONS ── */
+.resolution-card{background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.resolution-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.resolution-priority{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:white}
+.priority-1{background:var(--red)}.priority-2{background:var(--amber)}.priority-3{background:var(--blue)}
+.resolution-action-title{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.resolution-recovery{text-align:right;flex-shrink:0}
+.recovery-val{font-size:16px;font-weight:700;color:var(--emerald);font-family:'DM Serif Display',serif}
+.recovery-lbl{font-size:10px;color:var(--text-muted)}
+.resolution-desc{font-size:12px;color:var(--text-muted);line-height:1.5;margin-bottom:8px}
+.resolution-meta{display:flex;gap:8px;align-items:center}
+.confidence-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.confidence-fill{height:100%;border-radius:2px;background:var(--emerald)}
+
+/* ── AI TOOL REGISTRY ── */
+.tool-card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:var(--shadow)}
+.tool-vendor-roi{display:flex;gap:0;border-radius:8px;overflow:hidden;border:1px solid var(--border);margin-top:10px}
+.tool-roi-half{flex:1;padding:10px 12px;text-align:center}
+.tool-roi-half.vendor{background:#FEF3C7}
+.tool-roi-half.dynamyc{background:var(--emerald-light)}
+.tool-roi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.tool-roi-label.vendor{color:#92400E}
+.tool-roi-label.dynamyc{color:#065F46}
+.tool-roi-val{font-size:20px;font-weight:700;font-family:'DM Serif Display',serif}
+.tool-roi-val.vendor{color:#92400E}
+.tool-roi-val.dynamyc{color:var(--emerald)}
+.adoption-bar-wrap{margin-top:8px}
+.adoption-track{background:var(--border);border-radius:3px;height:6px;overflow:hidden;margin-top:4px}
+.adoption-fill{height:100%;border-radius:3px;transition:width 0.6s}
+
+/* ── KPI LIBRARY ── */
+.kpi-lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.kpi-lib-item{border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all 0.15s;background:white}
+.kpi-lib-item:hover{border-color:var(--navy-mid);background:var(--slate-light)}
+.kpi-lib-item.selected{border-color:var(--purple);background:var(--purple-light)}
+.kpi-lib-icon{font-size:20px;margin-bottom:6px}
+.kpi-lib-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px}
+.kpi-lib-desc{font-size:11px;color:var(--text-muted);line-height:1.4}
+
+/* ── CFO BOARD VIEW ── */
+.board-view-wrap{display:none}
+.board-view-wrap.active{display:block}
+.board-hero{display:grid;grid-template-columns:auto 1fr 1fr;gap:20px;margin-bottom:24px;align-items:start}
+.board-score-big{text-align:center;padding:28px 32px;background:var(--navy);border-radius:16px;color:white}
+.board-score-num{font-size:64px;font-weight:700;font-family:'DM Serif Display',serif;color:white;line-height:1}
+.board-score-label{font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.board-score-grade{display:inline-block;background:rgba(5,150,105,0.25);color:#6EE7B7;border-radius:20px;padding:3px 12px;font-size:12px;font-weight:700;margin-top:8px}
+.board-action-item{background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow)}
+.board-action-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;color:white;background:var(--red)}
+.board-action-num.two{background:var(--amber)}
+.board-action-num.three{background:var(--blue)}
+
+/* ── MILESTONES ── */
+.milestone-item{display:flex;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border)}
+.milestone-item:last-child{border-bottom:none}
+.milestone-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.milestone-done{background:var(--emerald)}
+.milestone-at-risk{background:var(--amber)}
+.milestone-missed{background:var(--red)}
+.milestone-pending{background:var(--border)}
+.milestone-timeline{display:flex;flex-direction:column;gap:2px}
+.milestone-name{font-size:13px;font-weight:600;color:var(--text)}
+.milestone-dates{font-size:11px;color:var(--text-muted)}
+.milestone-impact{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;white-space:nowrap}
+.impact-pos{background:var(--red-light);color:var(--red)}
+.impact-neg{background:var(--emerald-light);color:var(--emerald)}
+
+/* ── FORM ── */
+.form-section{margin-bottom:24px}
+.form-section-title{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid var(--navy-mid);display:inline-block}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-label{font-size:11.5px;font-weight:600;color:var(--text)}
+.form-label span{color:var(--red);margin-left:2px}
+.form-input,.form-select,.form-textarea{padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);background:white;transition:border-color 0.15s;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--navy-mid);box-shadow:0 0 0 3px rgba(30,58,95,0.08)}
+.form-textarea{resize:vertical;min-height:72px}
+.form-hint{font-size:11px;color:var(--text-muted)}
+.calc-box{background:linear-gradient(135deg,#EBF2FA,#F0FDF4);border:1.5px solid #BAD5F0;border-radius:10px;padding:16px 18px;margin-top:16px}
+.calc-box-title{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px}
+.calc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:13px}
+.calc-row .label{color:var(--text-muted)}.calc-row .value{font-weight:700;color:var(--navy)}
+.calc-divider{border:none;border-top:1px solid #BAD5F0;margin:8px 0}
+.steps-bar{display:flex;align-items:center;margin-bottom:24px}
+.step-item{display:flex;align-items:center;flex:1}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;flex-shrink:0;border:2px solid var(--border);background:white;color:var(--text-muted);transition:all 0.2s}
+.step-circle.active{border-color:var(--navy-mid);background:var(--navy-mid);color:white}
+.step-circle.done{border-color:var(--emerald);background:var(--emerald);color:white}
+.step-label{font-size:11px;font-weight:600;margin-left:7px;color:var(--text-muted);white-space:nowrap}
+.step-label.active{color:var(--navy-mid)}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 7px}
+.step-line.done{background:var(--emerald)}
+
+/* ── DETAIL ── */
+.detail-header{background:white;border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.detail-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px}
+.detail-tab{padding:8px 18px;font-size:13px;font-weight:600;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s}
+.detail-tab:hover{color:var(--navy)}
+.detail-tab.active{color:var(--navy-mid);border-bottom-color:var(--navy-mid)}
+.detail-tab-content{display:none}.detail-tab-content.active{display:block}
+.kpi-mini-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+.kpi-mini{background:white;border:1px solid var(--border);border-radius:10px;padding:14px;box-shadow:var(--shadow)}
+.kpi-mini-label{font-size:10.5px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px}
+.kpi-mini-value{font-size:19px;font-weight:700;color:var(--navy);margin-top:3px;font-family:'DM Serif Display',serif}
+
+/* ── ALERT ITEMS ── */
+.alert-item{display:flex;gap:10px;padding:13px 15px;border-bottom:1px solid var(--border);transition:background 0.1s;cursor:pointer}
+.alert-item:hover{background:#FAFBFD}.alert-item:last-child{border-bottom:none}
+.alert-icon-wrap{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ai-crit{background:var(--red-light)}.ai-warn{background:var(--amber-light)}.ai-opp{background:var(--emerald-light)}
+.alert-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.alert-desc{font-size:11.5px;color:var(--text-muted);line-height:1.5}
+.alert-meta{font-size:11px;color:var(--text-muted);margin-top:3px}
+.alert-src{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;background:var(--slate-light);border-radius:4px;padding:2px 6px;color:var(--text-muted);font-weight:600}
+
+/* ── INTEGRATION CARDS ── */
+.int-card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px}
+.int-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+
+/* ── QUADRANT TOOLTIP ── */
+.quad-tip{position:fixed;background:white;border:1px solid var(--border);border-radius:10px;padding:11px 13px;box-shadow:var(--shadow-md);pointer-events:none;z-index:999;display:none;min-width:190px}
+
+/* ── MODAL ── */
+#modal-overlay{position:fixed;inset:0;background:rgba(15,35,64,0.5);z-index:200;display:none;align-items:center;justify-content:center}
+#modal-overlay.open{display:flex}
+.modal{background:white;border-radius:16px;width:680px;max-width:95vw;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow-md);animation:slideUp 0.2s ease}
+@keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1}
+.modal-title{font-size:15px;font-weight:700;color:var(--navy)}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);padding:4px}
+.modal-body{padding:22px}
+.report-section{margin-bottom:18px}
+.report-section-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--text-muted);margin-bottom:7px}
+.report-text{font-size:13px;line-height:1.7;color:var(--text)}
+
+/* ── VERDICT ── */
+.verdict-box{border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-top:14px}
+.verdict-icon{font-size:26px}.verdict-label{font-size:13px;font-weight:700}.verdict-desc{font-size:11.5px;margin-top:2px}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.filter-input{padding:6px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none}
+.filter-input:focus{border-color:var(--navy-mid)}
+
+/* ── NOTIFICATION ── */
+#notification{position:fixed;top:18px;right:18px;background:var(--navy);color:white;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow-md);z-index:999;transform:translateX(120%);transition:transform 0.3s ease}
+#notification.show{transform:translateX(0)}
+
+/* ── GRIDS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}.mb-24{margin-bottom:24px}
+.flex{display:flex}.gap-10{gap:10px}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.text-muted{color:var(--text-muted);font-size:11.5px}
+
+@media(max-width:960px){
+  :root{--sidebar-w:0px}
+  #sidebar{display:none}
+  #main{margin-left:0}
+  .kpi-grid,.kpi-mini-row{grid-template-columns:1fr 1fr}
+  .grid-2,.ai-grid,.health-metrics{grid-template-columns:1fr}
+  .board-hero{grid-template-columns:1fr}
+}/* ── PORTFOLIO AUDIT HERO ── */
+.audit-hero{background:linear-gradient(125deg,#0F2340 0%,#1E3A5F 45%,#3B0764 100%);border-radius:16px;padding:28px 32px;color:white;margin-bottom:22px;position:relative;overflow:hidden;box-shadow:0 10px 40px rgba(15,35,64,0.18)}
+.audit-hero::before{content:'';position:absolute;top:-30%;right:-5%;width:55%;height:170%;background:radial-gradient(ellipse at center,rgba(220,38,38,0.12) 0%,transparent 75%);pointer-events:none}
+.audit-hero::after{content:'';position:absolute;bottom:-50%;left:-10%;width:50%;height:200%;background:radial-gradient(ellipse at center,rgba(124,58,237,0.10) 0%,transparent 75%);pointer-events:none}
+.audit-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:18px;position:relative;z-index:1;flex-wrap:wrap}
+.audit-eyebrow-chip{font-size:10.5px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1.2px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);padding:5px 12px;border-radius:14px}
+.audit-eyebrow-period{font-size:11px;color:rgba(255,255,255,0.5)}
+.audit-grid{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:32px;align-items:flex-start;position:relative;z-index:1}
+.audit-col{position:relative}
+.audit-col-label{font-size:10.5px;font-weight:700;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:12px}
+.audit-col-num{font-family:'DM Serif Display',serif;font-size:52px;line-height:1;letter-spacing:-1.5px;margin-bottom:12px}
+.audit-col-num.committed{color:rgba(255,255,255,0.65)}
+.audit-col-num.atrisk{color:#FCA5A5;text-shadow:0 0 30px rgba(220,38,38,0.4)}
+.audit-col-num.recoverable{color:#86EFAC;text-shadow:0 0 30px rgba(16,185,129,0.4)}
+.audit-col-sub{font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.5}
+.audit-col-sub strong{color:white;font-weight:700}
+.audit-arrow{position:absolute;top:62px;right:-20px;font-size:20px;color:rgba(255,255,255,0.3)}
+.audit-cta-row{display:flex;align-items:center;justify-content:space-between;margin-top:22px;padding-top:22px;border-top:1px solid rgba(255,255,255,0.1);position:relative;z-index:1;gap:14px;flex-wrap:wrap}
+.audit-cta-text{font-size:12.5px;color:rgba(255,255,255,0.78);line-height:1.55;flex:1;min-width:280px}
+.audit-cta-text strong{color:white}
+.audit-actions{display:flex;gap:9px;flex-shrink:0}
+@media(max-width:1100px){
+  .audit-grid{grid-template-columns:1fr;gap:24px}
+  .audit-arrow{display:none}
+}
+
+/* ── PLATFORM VISION TILE ── */
+.vision-tile{background:linear-gradient(135deg,#1E1148 0%,#2D1B69 60%,#1E3A5F 100%);border-radius:14px;padding:18px 28px;color:white;position:relative;overflow:hidden;box-shadow:0 10px 40px rgba(15,35,64,0.18);margin-top:20px;margin-bottom:8px}
+.vision-tile::before{content:'';position:absolute;top:0;right:0;width:55%;height:100%;background:radial-gradient(circle at 70% 50%,rgba(168,85,247,0.25),transparent 65%);pointer-events:none}
+.vision-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:32px;align-items:center;position:relative;z-index:1}
+.vision-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);padding:5px 11px;border-radius:14px;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#C4B5FD;margin-bottom:10px}
+.vision-title{font-family:'DM Serif Display',serif;font-size:23px;line-height:1.2;letter-spacing:-0.3px;margin-bottom:8px}
+.vision-text{font-size:14.5px;color:rgba(255,255,255,0.88);line-height:1.4;margin-bottom:14px}
+.vision-text strong{color:white}
+.vision-streams{display:flex;flex-direction:column;gap:6px}
+.vision-stream{display:flex;align-items:center;gap:11px;font-size:14.5px;color:rgba(255,255,255,0.88);line-height:1.4}
+.vision-stream-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.vision-stream-dot.cust{background:#7DD3FC;box-shadow:0 0 8px rgba(125,211,252,0.6)}
+.vision-stream-dot.vend{background:#D8B4FE;box-shadow:0 0 8px rgba(216,180,254,0.6)}
+.vision-stream-dot.emp{background:#6EE7B7;box-shadow:0 0 8px rgba(110,231,183,0.6)}
+.vision-preview{background:rgba(15,35,64,0.5);border:1px solid rgba(255,255,255,0.12);border-radius:11px;padding:14px;backdrop-filter:blur(8px)}
+.vp-mock-head{display:flex;align-items:center;gap:6px;padding-bottom:9px;margin-bottom:11px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.vp-dot{width:8px;height:8px;border-radius:50%}
+.vp-mock-title{font-size:14px;color:rgba(255,255,255,0.85);margin-left:8px;font-weight:700;letter-spacing:0.2px}
+.vp-streams{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+.vp-stream{padding:9px;border-radius:8px;text-align:center}
+.vp-stream.cust{background:linear-gradient(135deg,rgba(125,211,252,0.15),rgba(125,211,252,0.04));border:1px solid rgba(125,211,252,0.25)}
+.vp-stream.vend{background:linear-gradient(135deg,rgba(216,180,254,0.15),rgba(216,180,254,0.04));border:1px solid rgba(216,180,254,0.25)}
+.vp-stream.emp{background:linear-gradient(135deg,rgba(110,231,183,0.18),rgba(110,231,183,0.04));border:1px solid rgba(110,231,183,0.3);box-shadow:0 0 0 2px rgba(110,231,183,0.1)}
+.vp-stream-label{font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:7px}
+.vp-stream-label.cust{color:#7DD3FC}
+.vp-stream-label.vend{color:#D8B4FE}
+.vp-stream-label.emp{color:#6EE7B7}
+.vp-stream-num{font-family:'DM Serif Display',serif;font-size:22px;color:white;line-height:1}
+.vp-stream-stat{font-size:11px;color:rgba(255,255,255,0.55);margin-top:5px}
+.vp-flow{margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:rgba(255,255,255,0.55);font-weight:700;text-transform:uppercase;letter-spacing:0.6px}
+.vp-flow-arrow{color:rgba(255,255,255,0.4);font-size:14px}
+@media(max-width:960px){.vision-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="brand-icon">D</div>
+      <div>
+        <div class="brand-name">Dynamyc</div>
+        <div class="brand-tag">AI ROI Intelligence</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="icon">▣</span> Company Pulse</div>
+    <div class="nav-label">AI Intelligence</div>
+    <div class="nav-item" onclick="showPage('alerts')"><span class="icon">🔔</span> AI Alerts<span class="nav-badge" id="alert-count-badge">5</span></div>
+    <div class="nav-label">AI Portfolio</div>
+    <div class="nav-item" onclick="showPage('initiatives')"><span class="icon">◆</span> AI Initiatives</div>
+    <div class="nav-item" onclick="showPage('projects')"><span class="icon">📁</span> All AI Projects</div>
+    <div class="nav-item" onclick="showPage('add')"><span class="icon">＋</span> Add AI Project</div>
+    <div class="nav-label">Analysis</div>
+    <div class="nav-item" onclick="showPage('reports')"><span class="icon">📄</span> Reports</div>
+    <div class="nav-item" onclick="showPage('integrations')"><span class="icon">🔗</span> Integrations</div>
+  </div>
+  <div class="int-status-box">
+    <div class="int-status-label">Connected Sources</div>
+    <div class="int-row"><div class="int-dot"></div> Jira</div>
+    <div class="int-row"><div class="int-dot"></div> Asana</div>
+    <div class="int-row"><div class="int-dot"></div> Salesforce</div>
+    <div class="int-row"><div class="int-dot"></div> OpenAI / Anthropic</div>
+    <div class="int-row"><div class="int-dot"></div> Microsoft Copilot</div>
+    <div class="int-row"><div class="int-dot dim"></div> Glean (pending)</div>
+  </div>
+  <div class="sidebar-footer">
+    <span>Dynamyc v2.0 · AI ROI</span>
+    <span class="health-pill" id="sidebar-health">Score: 71</span>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-title" id="topbar-title">Company Pulse</div>
+    </div>
+    <div class="topbar-center">
+      <div class="board-toggle" id="board-toggle" onclick="toggleBoardView()">
+        <div class="dot"></div> CFO + Chief AI Officer View
+      </div>
+    </div>
+    <div class="topbar-actions">
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <!-- Board View (hidden by default) -->
+    <div class="board-view-wrap" id="board-view">
+      <div class="board-hero">
+        <div class="board-score-big">
+          <div class="board-score-num" id="board-score-num">71</div>
+          <div class="board-score-label">Portfolio Health Score</div>
+          <div class="board-score-grade" id="board-score-grade">B+ Acceptable</div>
+        </div>
+        <div class="card" style="padding:18px">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Capital Summary</div>
+          <div id="board-capital-summary"></div>
+        </div>
+        <div class="card" style="padding:18px">
+          <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Top 3 Prescribed Actions</div>
+          <div id="board-actions"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Portfolio Snapshot — Board View</span><span class="text-muted">Printable · For C-Suite distribution</span></div>
+        <div class="card-body" style="padding:0"><div class="table-wrap" id="board-table"></div></div>
+      </div>
+    </div>
+    <!-- Normal Dashboard View -->
+    <div id="normal-view">
+      <!-- ════════ AI INVESTMENT AUDIT HERO ════════ -->
+      <div class="audit-hero">
+        <div class="audit-eyebrow">
+          <span class="audit-eyebrow-chip">⚡ AI Investment Audit · Meridian AI Portfolio</span>
+        </div>
+        <div class="audit-grid">
+          <div class="audit-col">
+            <div class="audit-col-label">AI INVESTMENT COMMITTED</div>
+            <div class="audit-col-num committed" id="audit-committed">$8.2M</div>
+            <div class="audit-col-sub">Across <strong>8 AI initiatives</strong> · committed at last board cycle with promised ROI of <strong>2.4×</strong></div>
+            <div class="audit-arrow">→</div>
+          </div>
+          <div class="audit-col">
+            <div class="audit-col-label">AI INVESTMENT AT RISK</div>
+            <div class="audit-col-num atrisk" id="audit-atrisk">$3.4M</div>
+            <div class="audit-col-sub"><strong>Eroding ROI or missed milestones</strong> · 41% of AI portfolio failing to deliver</div>
+            <div class="audit-arrow">→</div>
+          </div>
+          <div class="audit-col">
+            <div class="audit-col-label">RECOVERABLE IN 60 DAYS</div>
+            <div class="audit-col-num recoverable" id="audit-recoverable">$1.8M</div>
+            <div class="audit-col-sub">Through <strong>kill, refocus, or scale decisions</strong> on the three worst-performing AI initiatives</div>
+          </div>
+        </div>
+        <div class="audit-cta-row">
+          <div class="audit-cta-text">
+            <strong>Bottom line:</strong> 41% of your AI investment is silently failing. Two AI initiatives are at <strong>negative realized ROI right now</strong> and need a board-level decision this quarter.
+          </div>
+          <div class="audit-actions">
+            <button class="btn btn-sm" style="background:white;color:var(--navy)" onclick="openReport('executive')">📄 AI ROI Board Memo</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid"></div>
+
+      <div class="card mb-20">
+        <div class="card-header"><span class="card-title">⚠️ Projects Needing Attention</span><span class="text-muted">ROI below 20% or eroding</span></div>
+        <div class="card-body" style="padding:0"><div class="table-wrap" id="attention-table"></div></div>
+      </div>
+
+      <div class="grid-2 mb-20">
+        <div class="card">
+          <div class="card-header"><span class="card-title">ROI by Project</span><span class="text-muted">Actual + 90d drift</span></div>
+          <div class="card-body" style="padding:14px 18px"><div id="bar-chart" style="display:flex;flex-direction:column;gap:9px"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Portfolio ROI Trend</span><span class="text-muted">Actual vs. Planned</span></div>
+          <div class="card-body" style="padding:14px 18px"><canvas id="trend-chart" height="240"></canvas></div>
+        </div>
+      </div>
+      <div class="card mb-20">
+        <div class="card-header"><span class="card-title">Planned vs. Realized Benefits</span><span class="text-muted">Benefit realization rate across portfolio</span></div>
+        <div class="card-body" style="padding:0"><div class="table-wrap" id="pvr-table"></div></div>
+      </div>
+
+      <!-- ════════ PLATFORM VISION TILE ════════ -->
+      <div class="vision-tile">
+        <div class="vision-grid">
+          <div>
+            <div class="vision-eyebrow">✦ Platform Vision · 2027</div>
+            <div class="vision-title">AI ROI is the wedge. Value Intelligence is the platform.</div>
+            <div class="vision-text">
+              Today: we measure what your vendors actually deliver. <strong>Next:</strong> we measure value across your entire enterprise. <strong>Dynamyc becomes the system of record for every dollar of strategic capital your executive team deploys.</strong>
+            </div>
+            <div class="vision-streams">
+              <div class="vision-stream">
+                <span class="vision-stream-dot vend"></span>
+                <span><strong>Vendor Value</strong> — what your tools and partners deliver to you</span>
+              </div>
+              <div class="vision-stream">
+                <span class="vision-stream-dot emp"></span>
+                <span><strong>Employee Value</strong> — what your workforce produces on internal initiatives</span>
+              </div>
+              <div class="vision-stream">
+                <span class="vision-stream-dot cust"></span>
+                <span><strong>Customer Value</strong> — what your company delivers to customers</span>
+              </div>
+            </div>
+          </div>
+          <div class="vision-preview">
+            <div class="vp-mock-head">
+              <span class="vp-dot" style="background:#FCA5A5"></span>
+              <span class="vp-dot" style="background:#FCD34D"></span>
+              <span class="vp-dot" style="background:#86EFAC"></span>
+              <span class="vp-mock-title">dynamyc.app / value intelligence</span>
+            </div>
+            <div class="vp-streams">
+              <div class="vp-stream vend">
+                <div class="vp-stream-label vend">Vendor</div>
+                <div class="vp-stream-num">+72%</div>
+                <div class="vp-stream-stat">$2.1M in</div>
+              </div>
+              <div class="vp-stream emp">
+                <div class="vp-stream-label emp">Employee</div>
+                <div class="vp-stream-num">+184%</div>
+                <div class="vp-stream-stat">$4.8M produced</div>
+              </div>
+              <div class="vp-stream cust">
+                <div class="vp-stream-label cust">Customer</div>
+                <div class="vp-stream-num">+248%</div>
+                <div class="vp-stream-stat">$8.4M out</div>
+              </div>
+            </div>
+            <div class="vp-flow">
+              <span>Vendor</span><span class="vp-flow-arrow">→</span><span>Employee</span><span class="vp-flow-arrow">→</span><span>Customer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI ALERTS -->
+  <div class="page" id="page-alerts">
+    <div class="grid-2 mb-20" style="align-items:start">
+      <div class="card">
+        <div class="card-header"><span class="card-title">✦ AI Early Warning Alerts</span><span class="badge badge-red" id="alerts-count-label">5 active</span></div>
+        <div id="alerts-list"></div>
+      </div>
+      <div>
+        <div class="card mb-16">
+          <div class="card-header"><span class="card-title">ROI Erosion Tracker</span><span class="text-muted">At-risk projects, 90-day view</span></div>
+          <div class="card-body" style="padding:14px 18px"><canvas id="erosion-chart" height="190"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Alert Summary</span></div>
+          <div class="card-body"><div id="alert-summary-grid"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INITIATIVES -->
+  <div class="page" id="page-initiatives">
+    <div class="card mb-16" style="padding:16px 18px;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#EDE9FE,#E0E7FF)">
+      <div style="font-size:22px">◆</div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--purple-mid)">AI Initiatives</div>
+        <div style="font-size:12px;color:var(--purple-mid);opacity:0.8">Parent-level strategic programs grouping related projects. Each initiative tracks total authorized budget, promised ROI, and real-time capital accountability.</div>
+      </div>
+    </div>
+    <div id="initiatives-list"></div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="page" id="page-projects">
+    <div class="filter-bar">
+      <input class="filter-input" type="text" placeholder="🔍 Search projects..." id="search-input" oninput="renderProjects()">
+      <select class="filter-input" id="filter-category" onchange="renderProjects()">
+        <option value="">All Categories</option>
+        <option>AI Automation</option><option>AI Analytics</option>
+        <option>AI HR Operations</option><option>AI Supply Chain</option><option>AI Competitive Intelligence</option>
+      </select>
+      <select class="filter-input" id="filter-status" onchange="renderProjects()">
+        <option value="">All Statuses</option>
+        <option>On Track</option><option>At Risk</option><option>Completed</option><option>Paused</option>
+      </select>
+    </div>
+    <div class="card"><div class="card-body" style="padding:0"><div class="table-wrap" id="projects-table"></div></div></div>
+  </div>
+
+  <!-- ADD PROJECT -->
+  <div class="page" id="page-add">
+    <div class="card" style="max-width:800px"><div class="card-body">
+      <div class="steps-bar" id="steps-bar"></div>
+      <div id="step-1">
+        <div class="form-section"><div class="form-section-title">Project Basics</div>
+          <div class="form-grid">
+            <div class="form-group form-full"><label class="form-label">Project Name <span>*</span></label><input class="form-input" id="f-name" placeholder="e.g. AI Customer Support Bot"></div>
+            <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-textarea" id="f-desc" placeholder="What strategic problem does this solve?"></textarea></div>
+            <div class="form-group"><label class="form-label">AI Initiative</label><select class="form-select" id="f-initiative"><option value="">None (standalone AI project)</option></select></div>
+            <div class="form-group"><label class="form-label">Category <span>*</span></label><select class="form-select" id="f-category"><option value="">Select...</option><option>AI Automation</option><option>AI Analytics</option><option>AI HR Operations</option><option>AI Supply Chain</option><option>AI Competitive Intelligence</option></select></div>
+            <div class="form-group"><label class="form-label">Project Owner <span>*</span></label><input class="form-input" id="f-owner" placeholder="e.g. Sarah Chen"></div>
+            <div class="form-group"><label class="form-label">Source System</label><select class="form-select" id="f-source"><option value="">Manual entry</option><option>Jira</option><option>Asana</option><option>Salesforce</option><option>SAP</option></select></div>
+            <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" type="date" id="f-start"></div>
+            <div class="form-group"><label class="form-label">Expected End Date</label><input class="form-input" type="date" id="f-end"></div>
+            <div class="form-group form-full"><label class="form-label">Time Horizon</label><select class="form-select" id="f-horizon"><option>Short-term (0–6 months)</option><option>Medium (6–18 months)</option><option>Long-term (18+ months)</option></select></div>
+          </div>
+        </div>
+        <div class="flex gap-10" style="justify-content:flex-end"><button class="btn btn-primary" onclick="goStep(2)">Next: Investment &amp; Costs →</button></div>
+      </div>
+      <div id="step-2" style="display:none">
+        <div class="form-section"><div class="form-section-title">Investment &amp; Costs</div>
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">One-time Implementation Cost ($)</label><input class="form-input" type="number" id="f-impl" placeholder="0" oninput="updateCalc()"></div>
+            <div class="form-group"><label class="form-label">Monthly Recurring Cost ($)</label><input class="form-input" type="number" id="f-recurring" placeholder="0" oninput="updateCalc()"></div>
+            <div class="form-group"><label class="form-label">Internal Staff Hours / Month</label><input class="form-input" type="number" id="f-hours" placeholder="0" oninput="updateCalc()"></div>
+            <div class="form-group"><label class="form-label">Average Hourly Staff Cost ($)</label><input class="form-input" type="number" id="f-hourly" placeholder="75" oninput="updateCalc()"></div>
+          </div>
+          <div class="calc-box">
+            <div class="calc-box-title">💰 Annual Investment Summary</div>
+            <div class="calc-row"><span class="label">Implementation</span><span class="value" id="c-impl">$0</span></div>
+            <div class="calc-row"><span class="label">Annual Recurring</span><span class="value" id="c-recur">$0</span></div>
+            <div class="calc-row"><span class="label">Annual Staff Cost</span><span class="value" id="c-staff">$0</span></div>
+            <hr class="calc-divider">
+            <div class="calc-row"><span class="label" style="font-weight:700">Total Annual Investment</span><span class="value" style="font-size:17px;color:var(--navy-mid)" id="c-total">$0</span></div>
+          </div>
+        </div>
+        <div class="flex gap-10" style="justify-content:flex-end"><button class="btn btn-outline" onclick="goStep(1)">← Back</button><button class="btn btn-primary" onclick="goStep(3)">Next: KPIs &amp; Benefits →</button></div>
+      </div>
+      <div id="step-3" style="display:none">
+        <div class="form-section"><div class="form-section-title">KPIs, Benefits &amp; Realization</div>
+          <div style="margin-bottom:14px">
+            <div class="form-label" style="margin-bottom:8px">KPI Category <span style="color:var(--red)">*</span></div>
+            <div class="kpi-lib-grid" id="kpi-lib-picker"></div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">Primary KPI Name <span>*</span></label><input class="form-input" id="f-kpi-name" placeholder="e.g. Support tickets resolved / week" oninput="updateROI()"></div>
+            <div class="form-group"><label class="form-label">Measurement Method</label><input class="form-input" id="f-kpi-method" placeholder="e.g. Helpdesk dashboard delta"></div>
+            <div class="form-group"><label class="form-label">Baseline Value <span>*</span></label><input class="form-input" type="number" id="f-baseline" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Current Value <span>*</span></label><input class="form-input" type="number" id="f-current" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Target Value</label><input class="form-input" type="number" id="f-target" placeholder="0"></div>
+            <div class="form-group"><label class="form-label">Unit</label><input class="form-input" id="f-unit" placeholder="e.g. tickets, hours, $"></div>
+            <div class="form-group form-full"><label class="form-label">Planned Annual Value ($) <span>*</span></label><input class="form-input" type="number" id="f-planned-value" placeholder="Committed value in original business case" oninput="updateROI()"><div class="form-hint">The ROI promised to leadership when this was authorized</div></div>
+            <div class="form-group form-full"><label class="form-label">Realized Annual Value ($) <span>*</span></label><input class="form-input" type="number" id="f-value" placeholder="Confirmed measured annual value generated" oninput="updateROI()"><div class="form-hint">Actual confirmed value captured to date (annualized)</div></div>
+            <div class="form-group form-full"><label class="form-label">Confidence Level</label><select class="form-select" id="f-confidence"><option>High — based on measured data</option><option>Medium — estimated with some data</option><option>Low — early estimate</option></select></div>
+          </div>
+          <div class="calc-box" style="margin-top:16px">
+            <div class="calc-box-title">📊 ROI &amp; Benefit Realization Summary</div>
+            <div class="calc-row"><span class="label">Total Annual Investment</span><span class="value" id="r-invest">$0</span></div>
+            <div class="calc-row"><span class="label">Planned Annual Value (Business Case)</span><span class="value" id="r-planned">$0</span></div>
+            <div class="calc-row"><span class="label">Realized Annual Value</span><span class="value" id="r-value">$0</span></div>
+            <hr class="calc-divider">
+            <div class="calc-row"><span class="label">Benefit Realization Rate</span><span class="value" id="r-brr">—</span></div>
+            <div class="calc-row"><span class="label" style="font-weight:700">Realized ROI</span><span class="value" id="r-roi" style="font-size:20px">—</span></div>
+            <div class="calc-row"><span class="label">Payback Period</span><span class="value" id="r-payback">—</span></div>
+            <div id="r-verdict" style="margin-top:10px"></div>
+          </div>
+        </div>
+        <div class="flex gap-10" style="justify-content:flex-end"><button class="btn btn-outline" onclick="goStep(2)">← Back</button><button class="btn btn-primary" onclick="saveProject()">✓ Save Project</button></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- INTEGRATIONS -->
+  <div class="page" id="page-integrations">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px" id="integrations-grid"></div>
+    <div class="card"><div class="card-header"><span class="card-title">Data Sync Activity</span><span class="text-muted">Last 24 hours</span></div><div class="card-body"><div id="sync-log"></div></div></div>
+  </div>
+
+  <!-- REPORTS -->
+  <div class="page" id="page-reports">
+    <div class="grid-3">
+      <div class="card" style="cursor:pointer" onclick="openReport('executive')"><div class="card-body" style="text-align:center;padding:28px 18px"><div style="font-size:32px;margin-bottom:10px">📊</div><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:6px">Executive Portfolio Summary</div><div style="font-size:11.5px;color:var(--text-muted);margin-bottom:14px">Board-ready overview with Health Score, Capital at Risk, AI signals, BRR and strategic recommendations</div><button class="btn btn-primary btn-sm">Generate Report</button></div></div>
+      <div class="card" style="cursor:pointer" onclick="openReport('scorecard')"><div class="card-body" style="text-align:center;padding:28px 18px"><div style="font-size:32px;margin-bottom:10px">📋</div><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:6px">Project Scorecard</div><div style="font-size:11.5px;color:var(--text-muted);margin-bottom:14px">One-page scorecard with KPIs, ROI, BRR, Business Case comparison and resolution actions</div><button class="btn btn-primary btn-sm">Generate Report</button></div></div>
+      <div class="card" style="cursor:pointer" onclick="openReport('forecast')"><div class="card-body" style="text-align:center;padding:28px 18px"><div style="font-size:32px;margin-bottom:10px">📈</div><div style="font-weight:700;font-size:14px;color:var(--navy);margin-bottom:6px">ROI Forecast</div><div style="font-size:11.5px;color:var(--text-muted);margin-bottom:14px">12-month trajectory with best/base/worst scenarios, payback date and benefit realization forecast</div><button class="btn btn-primary btn-sm">Generate Report</button></div></div>
+    </div>
+  </div>
+
+  <!-- PROJECT DETAIL -->
+  <div class="page" id="page-detail"><div id="detail-content"></div></div>
+
+</div><!-- /main -->
+
+<div id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="modal-title">Report</div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div style="padding:14px 22px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:9px">
+      <button class="btn btn-outline btn-sm" onclick="copyReport()">📋 Copy</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal()">Done</button>
+    </div>
+  </div>
+</div>
+<div id="notification"></div>
+<script>
+// ══════ DATA ══════
+const STRATEGIC_INITIATIVES = [
+  {id:'si1', name:'GenAI Customer Experience Initiative', desc:'Enterprise GenAI deployment across customer support, retention, and back-office operations.', budget:2400000, promisedROI:185, tier:'P1', status:'Active', owner:'CTO Office', projectIds:[1,2,3]},
+  {id:'si2', name:'AI-First Operations', desc:'Deploy AI across all operational functions to reduce manual effort and improve decision quality.', budget:1800000, promisedROI:220, tier:'P1', status:'Active', owner:'COO + Chief AI Officer', projectIds:[4,5,7]},
+  {id:'si3', name:'AI Supply Chain Optimization', desc:'Real-time demand sensing, inventory optimization and supplier risk management using ML.', budget:3200000, promisedROI:140, tier:'P2', status:'Active', owner:'Chief Supply Chain Officer', projectIds:[6]},
+  {id:'si4', name:'AI-Powered Strategic Intelligence', desc:'Competitive intelligence aggregation and automated strategic briefings for executive team.', budget:800000, promisedROI:310, tier:'P1', status:'Completed', owner:'Chief Strategy Officer', projectIds:[8]}
+];
+
+const SEED = [
+  {id:1, name:'AI Customer Support Bot', category:'AI Automation', owner:'Sarah Chen', source:'Jira', initiativeId:'si1',
+   desc:'Deployed an AI chatbot to handle tier-1 support tickets, reducing human agent load by 60%.',
+   start:'2024-01-15', end:'2024-03-30', horizon:'Short-term (0–6 months)',
+   impl:292000, recurring:52000, hours:20, hourly:75,
+   kpiName:'Support Tickets Handled / Week', kpiCategory:'Time Savings', kpiMethod:'Helpdesk dashboard delta',
+   baseline:800, current:320, target:250, unit:'tickets',
+   plannedValue:2210000, value:2020000, confidence:'High — based on measured data',
+   status:'On Track', roiHistory:[85,92,110,128,145,158,162,168,172,178,182,186],
+   vendorROI:240, adoptionPct:78,
+   milestones:[
+     {name:'Pilot launch', baseline:'2024-01-30', actual:'2024-02-02', done:true, criticalPath:true, financialImpact:0},
+     {name:'Full rollout', baseline:'2024-03-01', actual:'2024-03-01', done:true, criticalPath:true, financialImpact:0},
+     {name:'Tier 2 expansion', baseline:'2024-06-01', actual:null, done:false, criticalPath:false, financialImpact:552000}
+   ],
+   riskSignals:[], resolutionActions:[]},
+  {id:2, name:'Predictive Churn Model', category:'AI Analytics', owner:'Marcus Webb', source:'Salesforce', initiativeId:'si1',
+   desc:'ML model to predict customer churn 60 days in advance and trigger retention campaigns.',
+   start:'2024-02-01', end:'2024-07-31', horizon:'Medium (6–18 months)',
+   impl:390000, recurring:32500, hours:30, hourly:80,
+   kpiName:'Monthly Customer Churn Rate', kpiCategory:'Revenue Generation', kpiMethod:'CRM cohort analysis',
+   baseline:4.2, current:2.8, target:2.0, unit:'%',
+   plannedValue:1360000, value:1180000, confidence:'High — based on measured data',
+   status:'On Track', roiHistory:[10,25,40,58,72,84,90,95,100,104,108,112],
+   vendorROI:145, adoptionPct:91,
+   milestones:[
+     {name:'Model training complete', baseline:'2024-03-01', actual:'2024-03-08', done:true, criticalPath:true, financialImpact:-78000},
+     {name:'Retention campaign live', baseline:'2024-04-01', actual:'2024-04-01', done:true, criticalPath:true, financialImpact:0},
+     {name:'Model refresh v2', baseline:'2024-09-01', actual:null, done:false, criticalPath:false, financialImpact:260000}
+   ],
+   riskSignals:[], resolutionActions:[]},
+  {id:3, name:'Invoice Processing Automation', category:'AI Automation', owner:'Priya Nair', source:'Jira', initiativeId:'si1',
+   desc:'AI-powered OCR and workflow automation for accounts payable invoice processing.',
+   start:'2023-10-01', end:'2023-12-31', horizon:'Short-term (0–6 months)',
+   impl:117000, recurring:7800, hours:5, hourly:65,
+   kpiName:'Invoice Processing Time (hrs)', kpiCategory:'Cost Avoidance', kpiMethod:'AP system time logs',
+   baseline:48, current:4, target:2, unit:'hours',
+   plannedValue:975000, value:962000, confidence:'High — based on measured data',
+   status:'Completed', roiHistory:[120,210,280,350,420,500,580,640,700,740,760,780],
+   vendorROI:820, adoptionPct:100,
+   milestones:[
+     {name:'OCR model trained', baseline:'2023-10-20', actual:'2023-10-18', done:true, criticalPath:true, financialImpact:32500},
+     {name:'AP workflow live', baseline:'2023-11-15', actual:'2023-11-15', done:true, criticalPath:true, financialImpact:0},
+     {name:'AR expansion', baseline:'2024-06-01', actual:null, done:false, criticalPath:false, financialImpact:618000}
+   ],
+   riskSignals:[], resolutionActions:[]},
+  {id:4, name:'Sales Forecasting AI', category:'AI Analytics', owner:'James Liu', source:'Salesforce', initiativeId:'si2',
+   desc:'Machine learning model to improve sales forecast accuracy and pipeline visibility.',
+   start:'2024-03-01', end:'2024-09-30', horizon:'Medium (6–18 months)',
+   impl:618000, recurring:78000, hours:40, hourly:90,
+   kpiName:'Forecast Accuracy', kpiCategory:'Revenue Generation', kpiMethod:'Forecast vs. actuals 90-day lag',
+   baseline:62, current:74, target:85, unit:'%',
+   plannedValue:1200000, value:637000, confidence:'Medium — estimated with some data',
+   status:'At Risk', roiHistory:[18,20,22,20,19,18,16,14,12,null,null,null],
+   vendorROI:95, adoptionPct:54,
+   milestones:[
+     {name:'Data pipeline complete', baseline:'2024-04-01', actual:'2024-04-22', done:true, criticalPath:true, financialImpact:-182000},
+     {name:'Model v1 deployed', baseline:'2024-05-15', actual:'2024-06-10', done:true, criticalPath:true, financialImpact:-292000},
+     {name:'Full sales team adoption', baseline:'2024-07-01', actual:null, done:false, criticalPath:true, financialImpact:-566000}
+   ],
+   riskSignals:[
+     {type:'Low Adoption', severity:'High', desc:'Only 54% of sales reps actively using the model. Low adoption is a leading ROI erosion indicator.', roiImpact:338000, acknowledged:false},
+     {type:'Schedule Drift', severity:'Critical', desc:'Full adoption milestone is 45 days behind baseline. Financial impact accumulating.', roiImpact:566000, acknowledged:false}
+   ],
+   resolutionActions:[
+     {priority:1, action:'Launch mandatory onboarding sprint for non-adopting reps', roiRecovery:338000, confidence:82, desc:'Structured 2-week enablement program has shown 94% adoption rate in similar deployments. Assign sales ops to lead.'},
+     {priority:2, action:'Simplify forecast UI — reduce data entry to 3 required fields', roiRecovery:202000, confidence:71, desc:'User interviews indicate complexity is primary adoption barrier. Simplified UX can be deployed in 2 weeks.'},
+     {priority:3, action:'Establish weekly forecast review cadence with team leads', roiRecovery:117000, confidence:65, desc:'Accountability cadence increases sustained usage by average 34% within 60 days per benchmark data.'}
+   ]},
+  {id:5, name:'AI-Powered HR Onboarding', category:'AI HR Operations', owner:'Lisa Park', source:'Asana', initiativeId:'si2',
+   desc:'Automated onboarding workflows and document generation for new hires.',
+   start:'2024-01-10', end:'2024-04-10', horizon:'Short-term (0–6 months)',
+   impl:143000, recurring:9800, hours:8, hourly:70,
+   kpiName:'Onboarding Time (days)', kpiCategory:'Speed & Cycle Compression', kpiMethod:'HRIS completion timestamps',
+   baseline:14, current:6, target:5, unit:'days',
+   plannedValue:455000, value:416000, confidence:'Medium — estimated with some data',
+   status:'On Track', roiHistory:[30,48,62,74,80,85,88,90,91,92,92,92],
+   vendorROI:null, adoptionPct:88,
+   milestones:[
+     {name:'Workflow automation live', baseline:'2024-02-01', actual:'2024-02-01', done:true, criticalPath:true, financialImpact:0},
+     {name:'100% new hire enrollment', baseline:'2024-03-15', actual:'2024-03-20', done:true, criticalPath:false, financialImpact:0}
+   ],
+   riskSignals:[], resolutionActions:[]},
+  {id:6, name:'Demand Planning AI', category:'AI Supply Chain', owner:'Robert Kim', source:'SAP', initiativeId:'si3',
+   desc:'Enterprise AI platform for demand sensing, inventory optimization and supply chain intelligence.',
+   start:'2024-04-01', end:'2025-04-01', horizon:'Long-term (18+ months)',
+   impl:1360000, recurring:117000, hours:60, hourly:100,
+   kpiName:'Inventory Carrying Costs ($M)', kpiCategory:'Cost Avoidance', kpiMethod:'SAP financial module delta',
+   baseline:4.2, current:4.0, target:3.0, unit:'$M',
+   plannedValue:1820000, value:442000, confidence:'Low — early estimate',
+   status:'At Risk', roiHistory:[38,35,34,30,22,18,14,12,null,null,null,null],
+   vendorROI:180, adoptionPct:32,
+   milestones:[
+     {name:'Data integration complete', baseline:'2024-05-01', actual:'2024-06-15', done:true, criticalPath:true, financialImpact:-403000},
+     {name:'Demand model v1', baseline:'2024-07-01', actual:'2024-08-20', done:true, criticalPath:true, financialImpact:-572000},
+     {name:'Supply chain integration', baseline:'2024-10-01', actual:null, done:false, criticalPath:true, financialImpact:-942000},
+     {name:'Full deployment', baseline:'2025-01-01', actual:null, done:false, criticalPath:true, financialImpact:-1430000}
+   ],
+   riskSignals:[
+     {type:'ROI Erosion', severity:'Critical', desc:'ROI has declined from +38% to +12% over 90 days. Scope creep identified as primary driver.', roiImpact:1380000, acknowledged:false},
+     {type:'Schedule Drift', severity:'Critical', desc:'Supply chain integration milestone is 50 days late. Downstream milestones at cascading risk.', roiImpact:942000, acknowledged:false},
+     {type:'Low Adoption', severity:'High', desc:'Only 32% platform adoption. Usage signal predicts further ROI erosion in 60-90 days if unchanged.', roiImpact:618000, acknowledged:false}
+   ],
+   resolutionActions:[
+     {priority:1, action:'Freeze scope — implement change control board immediately', roiRecovery:910000, confidence:88, desc:'Scope creep is the root cause of ROI erosion. A formal change control process with CFO approval gate will stop further budget bleed. Implement within 1 week.'},
+     {priority:2, action:'Accelerate supply chain integration with dedicated sprint team', roiRecovery:585000, confidence:74, desc:'Assign 2 additional engineers from bench. Compressed 6-week sprint can recover 70% of schedule slip. Critical path dependency for full deployment.'},
+     {priority:3, action:'Launch executive sponsorship program for adoption', roiRecovery:358000, confidence:66, desc:'Assign C-suite champion per business unit. Mandate adoption in weekly ops reviews. Historical data shows 2.4x adoption lift with executive sponsorship.'}
+   ]},
+  {id:7, name:'Contract Review AI', category:'AI Automation', owner:'Angela Torres', source:'Jira', initiativeId:'si2',
+   desc:'NLP-powered contract analysis tool to flag risk clauses and accelerate legal review.',
+   start:'2024-05-01', end:'2024-10-31', horizon:'Medium (6–18 months)',
+   impl:247000, recurring:29000, hours:15, hourly:120,
+   kpiName:'Contract Review Time (hrs)', kpiCategory:'Time Savings', kpiMethod:'Legal ops ticketing system',
+   baseline:8, current:6.5, target:3, unit:'hours',
+   plannedValue:520000, value:208000, confidence:'Medium — estimated with some data',
+   status:'Paused', roiHistory:[10,14,18,20,22,22,20,18,null,null,null,null],
+   vendorROI:110, adoptionPct:41,
+   milestones:[
+     {name:'Model training on contracts', baseline:'2024-06-01', actual:'2024-06-01', done:true, criticalPath:true, financialImpact:0},
+     {name:'Legal team pilot', baseline:'2024-07-15', actual:'2024-07-15', done:true, criticalPath:false, financialImpact:0}
+   ],
+   riskSignals:[
+     {type:'Stalled KPI', severity:'Medium', desc:'KPI improvement flat for 6 weeks. Project is Paused but costs continue accruing at $29K/mo.', roiImpact:176000, acknowledged:false}
+   ],
+   resolutionActions:[
+     {priority:1, action:'Decision gate: resume with expanded scope or sunset project', roiRecovery:176000, confidence:60, desc:'Paused projects with ongoing cost bleed require a binary decision within 30 days. Recommend legal ops stakeholder review with CFO sign-off.'}
+   ]},
+  {id:8, name:'AI Competitive Intelligence', category:'AI Competitive Intelligence', owner:'David Osei', source:'Asana', initiativeId:'si4',
+   desc:'AI-aggregated competitive intelligence platform with automated weekly executive briefings.',
+   start:'2023-09-01', end:'2024-03-31', horizon:'Medium (6–18 months)',
+   impl:358000, recurring:58500, hours:25, hourly:85,
+   kpiName:'Time to Market Insight (days)', kpiCategory:'Speed & Cycle Compression', kpiMethod:'Strategy team survey delta',
+   baseline:21, current:3, target:2, unit:'days',
+   plannedValue:1950000, value:1920000, confidence:'High — based on measured data',
+   status:'Completed', roiHistory:[40,80,130,180,220,260,300,340,370,390,405,415],
+   vendorROI:null, adoptionPct:96,
+   milestones:[
+     {name:'Data aggregation live', baseline:'2023-10-01', actual:'2023-09-28', done:true, criticalPath:true, financialImpact:52000},
+     {name:'Executive briefing automation', baseline:'2023-12-01', actual:'2023-11-25', done:true, criticalPath:true, financialImpact:78000},
+     {name:'Full rollout', baseline:'2024-02-01', actual:'2024-01-15', done:true, criticalPath:false, financialImpact:117000}
+   ],
+   riskSignals:[], resolutionActions:[]}
+];
+
+const AI_ALERTS = [
+  {id:1,type:'critical',icon:'🚨',project:'Demand Planning AI',pid:6,
+   title:'ROI Erosion: −26% in 90 days',
+   desc:'ROI dropped from +38% to +12%. Pattern matches scope creep + delayed milestones. Capital at risk: $1.4M.',
+   source:'Jira · SAP',time:'2 hours ago'},
+  {id:2,type:'critical',icon:'⚠️',project:'Sales Forecasting AI',pid:4,
+   title:'Benefit realization at 53% of plan',
+   desc:'Delivered $640K against $1.2M commitment. Low adoption (54%) is the primary driver — usage signal predicts further decline.',
+   source:'Salesforce',time:'4 hours ago'},
+  {id:3,type:'warning',icon:'📉',project:'Contract Review AI',pid:7,
+   title:'KPI improvement stalled — 6 weeks flat',
+   desc:'Project is Paused but costs continue at $29K/mo. Decision gate required within 30 days.',
+   source:'Jira',time:'1 day ago'},
+  {id:4,type:'opportunity',icon:'⭐',project:'AI Customer Support Bot',pid:1,
+   title:'Scale signal: +186% ROI, capacity headroom',
+   desc:'Infrastructure at 62% utilization. Expanding to Tier 2 tickets could generate additional $550K+ annually.',
+   source:'Jira · Salesforce',time:'2 days ago'},
+  {id:5,type:'opportunity',icon:'💡',project:'Invoice Processing Automation',pid:3,
+   title:'Completed project ripe for AR expansion',
+   desc:'780% ROI achieved. Expanding scope to AR/collections projected to generate $550K–780K additional annual value.',
+   source:'Jira',time:'3 days ago'}
+];
+
+const AI_TOOLS = [
+  {name:'Microsoft Copilot', vendor:'Microsoft', icon:'Ⓜ️', category:'AI Automation', vendorROI:340, dynamycROI:127, adoption:58, spend:180000, status:'At Risk', desc:'Enterprise AI assistant across M365 suite'},
+  {name:'Salesforce Einstein', vendor:'Salesforce', icon:'☁️', category:'AI Analytics', vendorROI:210, dynamycROI:168, adoption:74, spend:95000, status:'On Track', desc:'AI-powered CRM insights and predictions'},
+  {name:'GitHub Copilot', vendor:'GitHub', icon:'🐙', category:'AI Automation', vendorROI:175, dynamycROI:198, adoption:91, spend:42000, status:'On Track', desc:'AI pair programmer for engineering team'},
+  {name:'Custom LLM (GPT-4)', vendor:'OpenAI', icon:'🧠', category:'AI Analytics', vendorROI:null, dynamycROI:82, adoption:45, spend:68000, status:'At Risk', desc:'Internal document analysis and summarization'},
+  {name:'Glean (Enterprise Search)', vendor:'Glean', icon:'🔍', category:'AI Automation', vendorROI:290, dynamycROI:94, adoption:38, spend:55000, status:'At Risk', desc:'AI-powered enterprise knowledge search'},
+  {name:'Gong Revenue Intelligence', vendor:'Gong', icon:'📞', category:'AI Analytics', vendorROI:185, dynamycROI:201, adoption:88, spend:78000, status:'On Track', desc:'Sales call analysis and coaching AI'}
+];
+
+const INTEGRATIONS = [
+  {name:'Jira', icon:'🟦', desc:'Project tracking, milestones, velocity data', connected:true, lastSync:'2 min ago', records:'847 tasks synced'},
+  {name:'Asana', icon:'🔴', desc:'Portfolio timelines, task completion rates', connected:true, lastSync:'15 min ago', records:'312 tasks synced'},
+  {name:'Salesforce', icon:'☁️', desc:'Revenue impact, pipeline, churn metrics', connected:true, lastSync:'1 hr ago', records:'2,140 records synced'},
+  {name:'SAP', icon:'🟩', desc:'Financial data, cost centers, budget actuals', connected:false, lastSync:'Pending auth', records:'—'},
+  {name:'Workday', icon:'🟨', desc:'HR data, headcount, staff cost actuals', connected:false, lastSync:'Not connected', records:'—'},
+  {name:'Slack', icon:'💬', desc:'Push alert notifications to team channels', connected:false, lastSync:'Not connected', records:'—'}
+];
+
+const SYNC_LOG = [
+  {time:'2 min ago', source:'Jira', event:'Synced 12 task updates across 4 projects', type:'success'},
+  {time:'15 min ago', source:'Asana', event:'Milestone completion updated — HR Onboarding (100%)', type:'success'},
+  {time:'1 hr ago', source:'Salesforce', event:'Churn rate refreshed — Predictive Churn Model KPI updated', type:'success'},
+  {time:'3 hr ago', source:'Jira', event:'Demand Planning AI — scope change detected (+$18,000 cost impact)', type:'warning'},
+  {time:'6 hr ago', source:'Dynamyc AI', event:'ROI erosion signal generated for Demand Planning AI', type:'critical'},
+  {time:'1 day ago', source:'Asana', event:'Contract Review AI status changed to Paused', type:'info'}
+];
+
+const KPI_CATEGORIES = [
+  {id:'time', icon:'⏱', name:'Time Savings', desc:'Hours, cycle time, processing speed reductions'},
+  {id:'revenue', icon:'💰', name:'Revenue Generation', desc:'Direct revenue uplift, pipeline acceleration'},
+  {id:'cost', icon:'🛡', name:'Cost Avoidance', desc:'Headcount, spend, operational cost reduction'},
+  {id:'quality', icon:'✅', name:'Output Quality & Risk', desc:'Error rates, compliance, audit outcomes'},
+  {id:'speed', icon:'⚡', name:'Speed & Cycle Compression', desc:'Time-to-market, decision latency, throughput'},
+  {id:'health', icon:'📡', name:'AI Health Metrics', desc:'Adoption rate, model drift, usage telemetry'}
+];
+
+let projects = JSON.parse(localStorage.getItem('dynamyc_v2')||'null') || JSON.parse(JSON.stringify(SEED));
+let dismissed = JSON.parse(localStorage.getItem('dynamyc_dis')||'[]');
+let currentStep = 1;
+let selectedKpiCategory = '';
+let boardViewActive = false;
+let currentDetailId = null;
+let currentScenario = 'base';
+
+function save() { localStorage.setItem('dynamyc_v2', JSON.stringify(projects)); }
+function saveDis() { localStorage.setItem('dynamyc_dis', JSON.stringify(dismissed)); }
+
+// ══════ SAFE HELPERS ══════
+function el(id) { return document.getElementById(id); }
+function set(id, html) { const e=el(id); if(e) e.innerHTML=html; }
+function setText(id, txt) { const e=el(id); if(e) e.textContent=txt; }
+
+// ══════ CALCULATIONS ══════
+function calc(p) {
+  const inv = p.impl + p.recurring*12 + p.hours*p.hourly*12;
+  const roi = inv>0 ? (p.value-inv)/inv*100 : 0;
+  const proi = inv>0 ? ((p.plannedValue||p.value)-inv)/inv*100 : 0;
+  const pay = p.value>0 ? inv/p.value*12 : 999;
+  const brr = p.plannedValue>0 ? p.value/p.plannedValue*100 : 100;
+  const h = (p.roiHistory||[]).filter(v=>v!==null);
+  const drift = h.length>=4 ? h[h.length-1]-h[Math.max(0,h.length-4)] : 0;
+  const capitalAtRisk = roi<40||drift<-5 ? Math.max(0,(p.plannedValue||p.value)-p.value+(drift<-5?Math.abs(drift)*inv/100:0)) : 0;
+  return {inv, roi, proi, pay, brr, drift, capitalAtRisk};
+}
+
+function portfolioHealthScore(data) {
+  let score = 0;
+  const weights = {roi:35, brr:25, drift:20, alerts:10, adoption:10};
+  const avgROI = data.reduce((a,d)=>a+Math.max(0,Math.min(d.roi,200)),0)/data.length;
+  score += Math.min(35, (avgROI/200)*35);
+  const avgBRR = data.reduce((a,d)=>a+Math.min(d.brr,100),0)/data.length;
+  score += Math.min(25, (avgBRR/100)*25);
+  const goodDrift = data.filter(d=>d.drift>=-5).length/data.length;
+  score += goodDrift*20;
+  const activeAlerts = AI_ALERTS.filter(a=>!dismissed.includes(a.id));
+  const critPenalty = activeAlerts.filter(a=>a.type==='critical').length*4;
+  score += Math.max(0, 10-critPenalty);
+  const withAdoption = projects.filter(p=>p.adoptionPct!=null);
+  if(withAdoption.length>0){
+    const avgAdopt = withAdoption.reduce((a,p)=>a+p.adoptionPct,0)/withAdoption.length;
+    score += (avgAdopt/100)*10;
+  } else score+=7;
+  return Math.min(100, Math.round(score));
+}
+
+function rc(r){return r>=80?'var(--emerald)':r>=20?'var(--amber)':'var(--red)'}
+function rb(r){return r>=80?'badge-green':r>=20?'badge-amber':'badge-red'}
+function sb(s){return{'On Track':'badge-green','At Risk':'badge-red','Completed':'badge-blue','Paused':'badge-slate'}[s]||'badge-slate'}
+function cb(c){return{'AI Automation':'badge-blue','AI Analytics':'badge-purple','AI HR Operations':'badge-teal','AI Supply Chain':'badge-amber','AI Competitive Intelligence':'badge-gold','Strategic Initiative':'badge-amber','Process Improvement':'badge-slate'}[c]||'badge-slate'}
+function f$(n){return '$'+Math.abs(Math.round(n)).toLocaleString()}
+function fR(r){return(r>=0?'+':'')+Math.round(r)+'%'}
+function fP(m){if(m>=120)return'N/A';if(m<1)return'<1 mo';if(m<12)return Math.round(m)+' mo';return(m/12).toFixed(1)+' yrs'}
+function driftBadge(d){
+  if(d>2) return `<span class="drift-up">▲ +${Math.round(d)}%</span>`;
+  if(d<-2) return `<span class="drift-dn">▼ ${Math.round(d)}%</span>`;
+  return `<span class="drift-fl">— Flat</span>`;
+}
+
+// ══════ NAV ══════
+const META = {
+  dashboard:{t:'Company Pulse',s:''},
+  alerts:{t:'AI Early Warning Alerts',s:'Catch failing AI pilots before they become stranded investments'},
+  initiatives:{t:'AI Initiatives',s:'Parent-level AI programs and capital authorization'},
+  projects:{t:'All AI Projects',s:'Track and govern every AI pilot in your enterprise portfolio'},
+  add:{t:'Add AI Project',s:'Capture a new AI initiative for ROI tracking'},
+  integrations:{t:'Integrations',s:'Connected data sources powering Dynamyc AI ROI intelligence'},
+  reports:{t:'Reports',s:'Generate AI ROI board memos and CFO scorecards'},
+  detail:{t:'AI Project Detail',s:'Deep-dive into individual AI initiative performance'}
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg=el('page-'+id); if(!pg) return;
+  pg.classList.add('active');
+  const order=['dashboard','alerts','initiatives','projects','add','reports','integrations'];
+  const items=document.querySelectorAll('.nav-item');
+  const idx=order.indexOf(id);
+  if(idx>=0&&items[idx]) items[idx].classList.add('active');
+  const m=META[id]||{};
+  setText('topbar-title',m.t||id);
+  setText('topbar-sub',m.s||'');
+  const boardToggle=el('board-toggle');
+  if(boardToggle) boardToggle.style.display=id==='dashboard'?'flex':'none';
+  if(id==='dashboard') renderDash();
+  if(id==='alerts') renderAlerts();
+  if(id==='initiatives') renderInitiatives();
+  if(id==='projects') renderProjects();
+  if(id==='integrations') renderIntegrations();
+  if(id==='add') resetForm();
+  window.scrollTo(0,0);
+}
+
+// ══════ BOARD VIEW TOGGLE ══════
+function toggleBoardView() {
+  boardViewActive = !boardViewActive;
+  const toggle=el('board-toggle');
+  const boardView=el('board-view');
+  const normalView=el('normal-view');
+  if(toggle) toggle.classList.toggle('active', boardViewActive);
+  if(boardView) boardView.classList.toggle('active', boardViewActive);
+  if(normalView) normalView.style.display = boardViewActive?'none':'block';
+  if(boardViewActive) renderBoardView();
+}
+
+function renderBoardView() {
+  const data=projects.map(p=>({p,...calc(p)}));
+  const tInv=data.reduce((a,d)=>a+d.inv,0);
+  const tVal=data.reduce((a,d)=>a+d.p.value,0);
+  const tPlan=data.reduce((a,d)=>a+(d.p.plannedValue||d.p.value),0);
+  const tRisk=data.reduce((a,d)=>a+d.capitalAtRisk,0);
+  const score=portfolioHealthScore(data);
+  const grade=score>=90?'A+ Excellent':score>=80?'A Excellent':score>=70?'B+ Acceptable':score>=60?'B Needs Attention':'C At Risk';
+
+  setText('board-score-num', score);
+  const gradeEl=el('board-score-grade');
+  if(gradeEl){gradeEl.textContent=grade;gradeEl.style.background=score>=80?'rgba(5,150,105,0.25)':score>=65?'rgba(217,119,6,0.25)':'rgba(220,38,38,0.25)';gradeEl.style.color=score>=80?'#6EE7B7':score>=65?'#FCD34D':'#FCA5A5'}
+
+  set('board-capital-summary',`
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px;color:var(--text-muted)">Total Investment</span>
+        <span style="font-weight:700;font-size:15px;color:var(--navy)">${f$(tInv)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px;color:var(--text-muted)">Planned Value</span>
+        <span style="font-weight:700;font-size:15px;color:var(--navy)">${f$(tPlan)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:13px;color:var(--text-muted)">Realized Value</span>
+        <span style="font-weight:700;font-size:15px;color:var(--emerald)">${f$(tVal)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--red-light);border-radius:8px">
+        <span style="font-size:13px;font-weight:700;color:var(--red)">Capital at Risk</span>
+        <span style="font-weight:700;font-size:18px;color:var(--red);font-family:'DM Serif Display',serif">${f$(tRisk)}</span>
+      </div>
+    </div>`);
+
+  const topActions = projects.flatMap(p=>p.resolutionActions.map(a=>({...a,projectName:p.name,pid:p.id}))).sort((a,b)=>a.priority-b.priority).slice(0,3);
+  const numClass=['','','two','three'];
+  set('board-actions', topActions.length ? topActions.map((a,i)=>`
+    <div class="board-action-item">
+      <div class="board-action-num ${numClass[i+1]||''}">${i+1}</div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">${a.action}</div>
+        <div style="font-size:11.5px;color:var(--text-muted)">${a.projectName} · ${f$(a.roiRecovery)} potential recovery</div>
+      </div>
+    </div>`).join('') : '<div style="color:var(--text-muted);font-size:13px">No active resolution actions.</div>');
+
+  const sorted=data.sort((a,b)=>b.roi-a.roi);
+  var boardRows=sorted.map(function(d){
+    var si2=STRATEGIC_INITIATIVES.find(function(s){return s.projectIds.includes(d.p.id)});
+    var brrC=d.brr>=90?'#065F46':d.brr>=70?'#92400E':'#991B1B';
+    var rCell=d.capitalAtRisk>0?'<span style="font-weight:700;color:var(--red)">'+f$(d.capitalAtRisk)+'</span>':'<span style="color:var(--emerald)">—</span>';
+    return '<tr><td style="font-weight:600">'+d.p.name+'</td><td style="font-size:12px;color:var(--text-muted)">'+(si2?si2.name:'—')+'</td><td>'+f$(d.inv)+'</td><td style="color:var(--text-muted)">'+fR(d.proi)+'</td><td><span style="font-weight:700;color:'+rc(d.roi)+'">'+fR(d.roi)+'</span></td><td><span style="font-weight:700;font-size:12px;color:'+brrC+'">'+Math.round(d.brr)+'%</span></td><td>'+rCell+'</td><td><span class="badge '+sb(d.p.status)+'">'+d.p.status+'</span></td></tr>';
+  }).join('');
+  set('board-table','<table><thead><tr><th>Project</th><th>Initiative</th><th>Investment</th><th>Promised ROI</th><th>Realized ROI</th><th>BRR</th><th>Capital at Risk</th><th>Status</th></tr></thead><tbody>'+boardRows+'</tbody></table>');
+}
+
+// ══════ DASHBOARD ══════
+function renderDash() {
+  const data=projects.map(p=>({p,...calc(p)}));
+  const tInv=data.reduce((a,d)=>a+d.inv,0);
+  const tVal=data.reduce((a,d)=>a+d.p.value,0);
+  const tPlan=data.reduce((a,d)=>a+(d.p.plannedValue||d.p.value),0);
+  const tRisk=data.reduce((a,d)=>a+d.capitalAtRisk,0);
+  const pROI=tInv>0?(tVal-tInv)/tInv*100:0;
+  const pBRR=tPlan>0?tVal/tPlan*100:100;
+  const active=AI_ALERTS.filter(a=>!dismissed.includes(a.id));
+  const score=portfolioHealthScore(data);
+
+  // Audit hero shows storytelling numbers — KPI strip below shows live calculations
+  setText('audit-committed', '$8.2M');
+  setText('audit-atrisk', '$3.4M');
+  setText('audit-recoverable', '$1.8M');
+
+  setText('sidebar-health','Score: '+score);
+
+  // AI insights preview
+  set('ai-insights-preview', active.slice(0,3).map(a=>`
+    <div class="ai-item" onclick="showPage('alerts')">
+      <div class="ai-type ${a.type==='critical'?'ai-type-critical':a.type==='warning'?'ai-type-warning':'ai-type-opportunity'}">${a.type.toUpperCase()}</div>
+      <div class="ai-title-sm">${a.title}</div>
+      <div class="ai-sub-sm">${a.project}</div>
+      <div class="ai-link-sm">View details →</div>
+    </div>`).join(''));
+
+  // KPI cards
+  set('kpi-grid',`
+    <div class="kpi-card"><div class="kpi-label">Portfolio Health Score</div><div class="kpi-value ${score>=80?'positive':score>=65?'warn':'negative'}">${score}</div><div class="kpi-change">Dynamyc composite · out of 100</div></div>
+    <div class="kpi-card"><div class="kpi-label">Capital at Risk</div><div class="kpi-value negative">${f$(tRisk)}</div><div class="kpi-change">Across ${data.filter(d=>d.capitalAtRisk>0).length} projects</div></div>
+    <div class="kpi-card"><div class="kpi-label">Value Realized</div><div class="kpi-value positive">${f$(tVal)}</div><div class="kpi-change">vs. ${f$(tPlan)} planned · BRR ${Math.round(pBRR)}%</div></div>
+    <div class="kpi-card"><div class="kpi-label">AI Alerts Active</div><div class="kpi-value negative">${active.length}</div><div class="kpi-change">${active.filter(a=>a.type==='critical').length} critical · ${active.filter(a=>a.type==='opportunity').length} opportunities</div></div>`);
+
+  // Bar chart with drift
+  const sorted=[...data].sort((a,b)=>b.roi-a.roi);
+  const maxR=Math.max(...sorted.map(d=>Math.abs(d.roi)),20);
+  set('bar-chart',sorted.map(d=>`
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:12px;font-weight:600;cursor:pointer" onclick="showDetail(${d.p.id})">${d.p.name}</span>
+        <div style="display:flex;align-items:center;gap:5px">${driftBadge(d.drift)}<span style="font-size:12px;font-weight:700;color:${rc(d.roi)}">${fR(d.roi)}</span></div>
+      </div>
+      <div style="background:var(--border);height:7px;border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.min(Math.abs(d.roi)/maxR*100,100)}%;background:${rc(d.roi)};border-radius:4px"></div>
+      </div>
+    </div>`).join(''));
+
+  drawTrend();
+  renderPVR();
+
+  const atRisk=data.filter(d=>d.roi<20||d.drift<-10);
+  set('attention-table', !atRisk.length
+    ? '<div style="padding:28px;text-align:center;color:var(--text-muted)">🎉 All projects performing above threshold.</div>'
+    : `<table><thead><tr><th>Project</th><th>Owner</th><th>Investment</th><th>Realized ROI</th><th>90d Drift</th><th>Capital at Risk</th><th>Status</th><th></th></tr></thead>
+      <tbody>${atRisk.map(d=>`<tr>
+        <td><span class="td-name" onclick="showDetail(${d.p.id})">${d.p.name}</span></td>
+        <td>${d.p.owner}</td><td>${f$(d.inv)}</td>
+        <td><span style="font-weight:700;color:${rc(d.roi)}">${fR(d.roi)}</span></td>
+        <td>${driftBadge(d.drift)}</td>
+        <td>${d.capitalAtRisk>0?`<span style="font-weight:700;color:var(--red)">${f$(d.capitalAtRisk)}</span>`:'—'}</td>
+        <td><span class="badge ${sb(d.p.status)}">${d.p.status}</span></td>
+        <td><button class="btn btn-outline btn-sm" onclick="showDetail(${d.p.id})">Review →</button></td>
+      </tr>`).join('')}</tbody></table>`);
+}
+
+function renderPVR() {
+  const data=projects.map(p=>({p,...calc(p)})).sort((a,b)=>a.brr-b.brr);
+  var pvrRows=data.map(function(d){
+    var pv=d.p.plannedValue||d.p.value,gap=pv-d.p.value;
+    var bc=d.brr>=90?'#065F46':d.brr>=70?'#92400E':'#991B1B';
+    var bbg=d.brr>=90?'var(--emerald-light)':d.brr>=70?'var(--amber-light)':'var(--red-light)';
+    var gapCell=gap>0?'<span style="color:var(--red);font-weight:700">−'+f$(gap)+'</span>':'<span style="color:var(--emerald);font-weight:700">On plan</span>';
+    return '<tr><td><span class="td-name" onclick="showDetail('+d.p.id+')">'+d.p.name+'</span></td><td><span class="badge '+cb(d.p.category)+'">'+d.p.category+'</span></td><td style="font-weight:600">'+f$(pv)+'</td><td style="font-weight:600;color:var(--emerald)">'+f$(d.p.value)+'</td><td><div class="pvr-bar"><div class="pvr-realized" style="width:'+Math.min(d.brr,100)+'%"></div><span class="pvr-bar-label">'+Math.round(d.brr)+'% realized</span></div></td><td>'+gapCell+'</td></tr>';
+  }).join('');
+  set('pvr-table','<table><thead><tr><th>Project</th><th>Category</th><th>Planned Value</th><th>Realized Value</th><th>Realization Rate</th><th>Gap</th></tr></thead><tbody>'+pvrRows+'</tbody></table>');
+}
+
+function drawTrend() {
+  const canvas=el('trend-chart'); if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||400, H=240;
+  canvas.width=W; canvas.height=H;
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const actual=[45,52,61,74,82,90,98,106,112,118,124,130];
+  const planned=[55,65,75,85,95,105,115,125,135,145,155,165];
+  const pad={l:40,r:20,t:16,b:28}; const minV=30, maxV=180;
+  const xS=(W-pad.l-pad.r)/(months.length-1), yS=(H-pad.t-pad.b)/(maxV-minV);
+  ctx.clearRect(0,0,W,H);
+  [0,.25,.5,.75,1].forEach(t=>{
+    const y=pad.t+t*(H-pad.t-pad.b);
+    ctx.beginPath();ctx.strokeStyle='#E2E8F0';ctx.lineWidth=1;ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#94A3B8';ctx.font='10px DM Sans';ctx.textAlign='right';
+    ctx.fillText(Math.round(maxV-t*(maxV-minV))+'%',pad.l-3,y+4);
+  });
+  ctx.beginPath();ctx.setLineDash([5,4]);ctx.strokeStyle='#CBD5E1';ctx.lineWidth=1.5;
+  planned.forEach((v,i)=>{const x=pad.l+i*xS,y=H-pad.b-(v-minV)*yS;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+  ctx.stroke();ctx.setLineDash([]);
+  const gr=ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+  gr.addColorStop(0,'rgba(5,150,105,0.15)');gr.addColorStop(1,'rgba(5,150,105,0)');
+  ctx.beginPath();
+  actual.forEach((v,i)=>{const x=pad.l+i*xS,y=H-pad.b-(v-minV)*yS;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+  ctx.lineTo(pad.l+(months.length-1)*xS,H-pad.b);ctx.lineTo(pad.l,H-pad.b);ctx.closePath();ctx.fillStyle=gr;ctx.fill();
+  ctx.beginPath();ctx.strokeStyle='#059669';ctx.lineWidth=2.5;
+  actual.forEach((v,i)=>{const x=pad.l+i*xS,y=H-pad.b-(v-minV)*yS;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+  ctx.stroke();
+  actual.forEach((v,i)=>{ctx.beginPath();ctx.arc(pad.l+i*xS,H-pad.b-(v-minV)*yS,3,0,Math.PI*2);ctx.fillStyle='#059669';ctx.fill()});
+  ctx.fillStyle='#94A3B8';ctx.font='10px DM Sans';ctx.textAlign='center';
+  months.forEach((m,i)=>ctx.fillText(m,pad.l+i*xS,H-7));
+  const lx=W-90,ly=pad.t+6;
+  ctx.beginPath();ctx.strokeStyle='#059669';ctx.lineWidth=2;ctx.setLineDash([]);ctx.moveTo(lx,ly);ctx.lineTo(lx+18,ly);ctx.stroke();
+  ctx.fillStyle='#475569';ctx.font='10px DM Sans';ctx.textAlign='left';ctx.fillText('Realized',lx+22,ly+4);
+  ctx.beginPath();ctx.setLineDash([4,3]);ctx.strokeStyle='#CBD5E1';ctx.lineWidth=1.5;ctx.moveTo(lx,ly+13);ctx.lineTo(lx+18,ly+13);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillText('Planned',lx+22,ly+17);
+}
+
+// ══════ AI ALERTS ══════
+function updateAlertBadge() {
+  const n=AI_ALERTS.filter(a=>!dismissed.includes(a.id)).length;
+  setText('alert-count-badge',n); setText('topbar-alert-count',n);
+}
+
+function renderAlerts() {
+  const active=AI_ALERTS.filter(a=>!dismissed.includes(a.id));
+  setText('alerts-count-label', active.length+' active');
+  updateAlertBadge();
+  const cls={critical:'ai-crit',warning:'ai-warn',opportunity:'ai-opp'};
+  set('alerts-list', !active.length
+    ? '<div style="padding:36px;text-align:center;color:var(--text-muted)">✅ No active alerts</div>'
+    : active.map(a=>`
+      <div class="alert-item" onclick="showDetail(${a.pid})">
+        <div class="alert-icon-wrap ${cls[a.type]||'ai-opp'}">${a.icon}</div>
+        <div style="flex:1">
+          <div class="alert-title">${a.title}</div>
+          <div class="alert-desc">${a.desc}</div>
+          <div class="alert-meta"><span class="alert-src">📡 ${a.source}</span> · ${a.time} · <strong>${a.project}</strong></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();showDetail(${a.pid})">Review →</button>
+          <button class="btn btn-sm" style="background:var(--slate-light);color:var(--text-muted);border:none;font-size:11px" onclick="event.stopPropagation();dismissAlert(${a.id})">Dismiss</button>
+        </div>
+      </div>`).join(''));
+  const crit=active.filter(a=>a.type==='critical').length;
+  const warn=active.filter(a=>a.type==='warning').length;
+  const opp=active.filter(a=>a.type==='opportunity').length;
+  set('alert-summary-grid',`
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="background:var(--red-light);border-radius:8px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#991B1B">${crit}</div><div style="font-size:10.5px;color:#991B1B;font-weight:600;margin-top:2px">Critical</div></div>
+      <div style="background:var(--amber-light);border-radius:8px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#92400E">${warn}</div><div style="font-size:10.5px;color:#92400E;font-weight:600;margin-top:2px">Warning</div></div>
+      <div style="background:var(--emerald-light);border-radius:8px;padding:12px;text-align:center"><div style="font-size:20px;font-weight:700;color:#065F46">${opp}</div><div style="font-size:10.5px;color:#065F46;font-weight:600;margin-top:2px">Opportunity</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);line-height:1.7"><strong>Data sources:</strong> Jira, Asana, Salesforce<br><strong>Last scan:</strong> 2 min ago<br><strong>Engine:</strong> ROI trajectory + velocity + adoption signal + spend variance</div>`);
+  drawErosion();
+}
+
+function dismissAlert(id) {
+  dismissed.push(id); saveDis(); renderAlerts(); updateAlertBadge();
+  notif('Alert dismissed');
+}
+
+function drawErosion() {
+  const canvas=el('erosion-chart'); if(!canvas) return;
+  const ctx=canvas.getContext('2d'), W=canvas.offsetWidth||340, H=190;
+  canvas.width=W; canvas.height=H;
+  const p6=projects.find(p=>p.id===6), p4=projects.find(p=>p.id===4);
+  const d6=(p6?.roiHistory||[]).filter(v=>v!==null);
+  const d4=(p4?.roiHistory||[]).filter(v=>v!==null);
+  const N=Math.max(d6.length,d4.length); if(N<2) return;
+  const all=[...d6,...d4], minV=Math.min(...all)-5, maxV=Math.max(...all)+5;
+  const pad={l:34,r:12,t:24,b:26};
+  const xS=(W-pad.l-pad.r)/(N-1), yS=(H-pad.t-pad.b)/(maxV-minV);
+  ctx.clearRect(0,0,W,H);
+  [0,.5,1].forEach(t=>{
+    const y=pad.t+t*(H-pad.t-pad.b);
+    ctx.beginPath();ctx.strokeStyle='#E2E8F0';ctx.lineWidth=1;ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#94A3B8';ctx.font='10px DM Sans';ctx.textAlign='right';
+    ctx.fillText(Math.round(maxV-t*(maxV-minV))+'%',pad.l-3,y+4);
+  });
+  [[d6,'#DC2626'],[d4,'#D97706']].forEach(([data,color])=>{
+    if(!data||data.length<2) return;
+    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=2;
+    data.forEach((v,i)=>{const x=pad.l+i*xS,y=H-pad.b-(v-minV)*yS;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+    ctx.stroke();
+    data.forEach((v,i)=>{ctx.beginPath();ctx.arc(pad.l+i*xS,H-pad.b-(v-minV)*yS,3,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()});
+  });
+  ctx.fillStyle='#94A3B8';ctx.font='10px DM Sans';ctx.textAlign='center';
+  for(let i=0;i<N;i++) ctx.fillText('M'+(i+1),pad.l+i*xS,H-7);
+  ctx.fillStyle='#DC2626';ctx.fillRect(pad.l,pad.t-14,10,3);
+  ctx.fillStyle='#475569';ctx.font='10px DM Sans';ctx.textAlign='left';ctx.fillText('Demand Planning',pad.l+14,pad.t-8);
+  ctx.fillStyle='#D97706';ctx.fillRect(pad.l+118,pad.t-14,10,3);
+  ctx.fillText('Sales Forecasting',pad.l+132,pad.t-8);
+}
+
+// ══════ STRATEGIC INITIATIVES ══════
+function renderInitiatives() {
+  set('initiatives-list', STRATEGIC_INITIATIVES.map(si=>{
+    const siProjects=projects.filter(p=>si.projectIds.includes(p.id));
+    const siData=siProjects.map(p=>({p,...calc(p)}));
+    const totalInv=siData.reduce((a,d)=>a+d.inv,0);
+    const totalVal=siData.reduce((a,d)=>a+d.p.value,0);
+    const totalPlan=siData.reduce((a,d)=>a+(d.p.plannedValue||d.p.value),0);
+    const siROI=totalInv>0?(totalVal-totalInv)/totalInv*100:0;
+    const siRisk=siData.reduce((a,d)=>a+d.capitalAtRisk,0);
+    const statusColor={'Active':'badge-blue','Completed':'badge-green','On-Hold':'badge-amber'}[si.status]||'badge-slate';
+    return`<div class="initiative-card">
+      <div class="initiative-header" onclick="toggleInitiative('${si.id}')">
+        <div class="initiative-expand" id="expand-${si.id}">▶</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+            <span style="font-size:14px;font-weight:700;color:var(--navy)">${si.name}</span>
+            <span class="badge ${statusColor}">${si.status}</span>
+            <span class="badge badge-gold">Priority ${si.tier}</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted)">${si.desc}</div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:4px">Owner: <strong>${si.owner}</strong> · ${si.projectIds.length} projects · Budget: <strong>${f$(si.budget)}</strong> · Promised ROI: <strong>${si.promisedROI}%</strong></div>
+        </div>
+        <div style="display:flex;gap:20px;flex-shrink:0">
+          <div class="initiative-kpi"><div class="initiative-kpi-val" style="color:${rc(siROI)}">${fR(siROI)}</div><div class="initiative-kpi-lbl">Realized ROI</div></div>
+          <div class="initiative-kpi"><div class="initiative-kpi-val" style="color:var(--emerald)">${f$(totalVal)}</div><div class="initiative-kpi-lbl">Value Realized</div></div>
+          ${siRisk>0?`<div class="initiative-kpi"><div class="initiative-kpi-val" style="color:var(--red)">${f$(siRisk)}</div><div class="initiative-kpi-lbl">Capital at Risk</div></div>`:''}
+        </div>
+      </div>
+      <div class="initiative-projects" id="si-projects-${si.id}">
+        <table style="width:100%"><thead><tr><th>Project</th><th>Owner</th><th>Investment</th><th>BRR</th><th>ROI</th><th>Status</th><th></th></tr></thead>
+        <tbody>${siData.map(d=>`<tr style="background:white">
+          <td><span class="td-name" onclick="showDetail(${d.p.id})">${d.p.name}</span></td>
+          <td style="color:var(--text-muted)">${d.p.owner}</td>
+          <td>${f$(d.inv)}</td>
+          <td><span style="font-weight:700;font-size:12px;color:${d.brr>=90?'#065F46':d.brr>=70?'#92400E':'#991B1B'}">${Math.round(d.brr)}%</span></td>
+          <td><span class="badge ${rb(d.roi)}">${fR(d.roi)}</span></td>
+          <td><span class="badge ${sb(d.p.status)}">${d.p.status}</span></td>
+          <td><button class="btn btn-outline btn-sm" onclick="showDetail(${d.p.id})">Detail →</button></td>
+        </tr>`).join('')}</tbody></table>
+      </div>
+    </div>`;
+  }).join(''));
+}
+
+function toggleInitiative(id) {
+  const proj=el('si-projects-'+id);
+  const exp=el('expand-'+id);
+  if(proj) proj.classList.toggle('open');
+  if(exp) exp.classList.toggle('open');
+}
+
+// ══════ PROJECTS TABLE ══════
+function renderProjects() {
+  const q=(el('search-input')?.value||'').toLowerCase();
+  const cat=el('filter-category')?.value||'';
+  const stat=el('filter-status')?.value||'';
+  const filtered=projects.filter(p=>(!q||p.name.toLowerCase().includes(q)||p.owner.toLowerCase().includes(q))&&(!cat||p.category===cat)&&(!stat||p.status===stat));
+  if(!filtered.length){set('projects-table','<div style="padding:36px;text-align:center;color:var(--text-muted)">No projects found.</div>');return}
+  var projRows=filtered.map(function(p){
+    var c=calc(p),inv=c.inv,roi=c.roi,brr=c.brr,drift=c.drift;
+    var bc=brr>=90?'#065F46':brr>=70?'#92400E':'#991B1B';
+    var bbg=brr>=90?'var(--emerald-light)':brr>=70?'var(--amber-light)':'var(--red-light)';
+    var aColor=p.adoptionPct!=null?(p.adoptionPct>=75?'#065F46':p.adoptionPct>=50?'#92400E':'#991B1B'):'#475569';
+    var aBg=p.adoptionPct!=null?(p.adoptionPct>=75?'var(--emerald-light)':p.adoptionPct>=50?'var(--amber-light)':'var(--red-light)'):'var(--slate-light)';
+    var adoptCell=p.adoptionPct!=null?'<span style="background:'+aBg+';color:'+aColor+';font-weight:700;font-size:11px;padding:2px 7px;border-radius:12px">'+p.adoptionPct+'%</span>':'<span style="color:var(--text-muted)">N/A</span>';
+    return '<tr><td><span class="td-name" onclick="showDetail('+p.id+')">'+p.name+'</span></td><td><span class="badge '+cb(p.category)+'">'+p.category+'</span></td><td><span style="font-size:10.5px;color:var(--text-muted);font-weight:600">'+(p.source||'—')+'</span></td><td style="font-weight:600">'+f$(inv)+'</td><td>'+f$(p.plannedValue||p.value)+'</td><td style="color:var(--emerald);font-weight:600">'+f$(p.value)+'</td><td><span style="background:'+bbg+';color:'+bc+';font-weight:700;font-size:11px;padding:2px 7px;border-radius:12px">'+Math.round(brr)+'%</span></td><td><span style="font-weight:700;color:'+rc(roi)+'">'+fR(roi)+'</span></td><td>'+driftBadge(drift)+'</td><td>'+adoptCell+'</td><td><span class="badge '+sb(p.status)+'">'+p.status+'</span></td><td><button class="btn btn-outline btn-sm" onclick="showDetail('+p.id+')">View →</button></td></tr>';
+  }).join('');
+  set('projects-table','<table><thead><tr><th>Project</th><th>Category</th><th>Source</th><th>Investment</th><th>Planned</th><th>Realized</th><th>BRR</th><th>ROI</th><th>Drift</th><th>Adoption</th><th>Status</th><th></th></tr></thead><tbody>'+projRows+'</tbody></table>');
+}
+
+// ══════ AI TOOL REGISTRY ══════
+function renderAIRegistry() {
+  set('ai-registry-grid', AI_TOOLS.map(t=>{
+    const gap=t.vendorROI!=null?t.vendorROI-t.dynamycROI:null;
+    const gapColor=gap!=null&&gap>50?'#991B1B':gap!=null&&gap>0?'#92400E':'#065F46';
+    return`<div class="tool-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="font-size:24px">${t.icon}</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:var(--text)">${t.name}</div>
+          <div style="font-size:11.5px;color:var(--text-muted)">${t.vendor} · ${t.category}</div>
+        </div>
+        <span class="badge ${sb(t.status)}" style="margin-left:auto">${t.status}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">${t.desc}</div>
+      <div class="tool-vendor-roi">
+        <div class="tool-roi-half vendor">
+          <div class="tool-roi-label vendor">Vendor claims</div>
+          <div class="tool-roi-val vendor">${t.vendorROI!=null?t.vendorROI+'%':'N/A'}</div>
+        </div>
+        <div class="tool-roi-half dynamyc">
+          <div class="tool-roi-label dynamyc">Dynamyc measures</div>
+          <div class="tool-roi-val dynamyc">${t.dynamycROI}%</div>
+        </div>
+      </div>
+      ${gap!=null?`<div style="margin-top:8px;font-size:11px;font-weight:700;text-align:center;color:${gapColor}">Gap: ${gap>0?'Vendor overstates by '+gap+'%':'Dynamyc confirms or exceeds'}</div>`:''}
+      <div class="adoption-bar-wrap">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted)"><span>Adoption</span><span style="font-weight:700;color:${t.adoption>=75?'#065F46':t.adoption>=50?'#92400E':'#991B1B'}">${t.adoption}%</span></div>
+        <div class="adoption-track"><div class="adoption-fill" style="width:${t.adoption}%;background:${t.adoption>=75?'var(--emerald)':t.adoption>=50?'var(--amber)':'var(--red)'}"></div></div>
+      </div>
+      <div style="margin-top:8px;font-size:11.5px;color:var(--text-muted)">Annual spend: <strong style="color:var(--text)">${f$(t.spend)}</strong></div>
+    </div>`}).join(''));
+
+  var regRows=AI_TOOLS.map(function(t){
+    var gap=t.vendorROI!=null?t.vendorROI-t.dynamycROI:null;
+    var gapH=gap!=null?'<span style="font-weight:700;color:'+(gap>50?'#991B1B':gap>20?'#92400E':'#065F46')+'">'+(gap>0?'−'+gap+'%':'+'+Math.abs(gap)+'%')+'</span>':'—';
+    var aColor=t.adoption>=75?'#065F46':t.adoption>=50?'#92400E':'#991B1B';
+    return '<tr><td><span style="font-weight:600">'+t.icon+' '+t.name+'</span></td><td style="color:var(--text-muted)">'+t.vendor+'</td><td style="font-weight:600">'+f$(t.spend)+'</td><td style="color:var(--amber);font-weight:600">'+(t.vendorROI!=null?t.vendorROI+'%':'N/A')+'</td><td style="color:var(--emerald);font-weight:600">'+t.dynamycROI+'%</td><td>'+gapH+'</td><td><span style="font-weight:700;font-size:11px;color:'+aColor+'">'+t.adoption+'%</span></td><td><span class="badge '+sb(t.status)+'">'+t.status+'</span></td></tr>';
+  }).join('');
+  set('ai-registry-table','<table><thead><tr><th>AI Tool</th><th>Vendor</th><th>Annual Spend</th><th>Vendor ROI</th><th>Dynamyc ROI</th><th>Gap</th><th>Adoption</th><th>Status</th></tr></thead><tbody>'+regRows+'</tbody></table>');
+}
+
+// ══════ PROJECT DETAIL ══════
+
+function milestoneBadge(p) {
+  if(!p.milestones||!p.milestones.length) return '';
+  return '<span class="badge badge-slate" style="font-size:10px;margin-left:3px">'+p.milestones.length+'</span>';
+}
+function riskBadge(p) {
+  var n=p.riskSignals?p.riskSignals.filter(function(r){return !r.acknowledged}).length:0;
+  if(!n) return '';
+  return '<span class="badge badge-red" style="font-size:10px;margin-left:3px">'+n+'</span>';
+}
+function resolutionBadge(p) {
+  if(!p.resolutionActions||!p.resolutionActions.length) return '';
+  return '<span class="badge badge-purple" style="font-size:10px;margin-left:3px">'+p.resolutionActions.length+'</span>';
+}
+function renderAlertBanners(alerts) {
+  if(!alerts||!alerts.length) return '';
+  var bg={critical:'var(--red-light)',opportunity:'var(--emerald-light)',warning:'var(--amber-light)'};
+  return '<div style="margin-bottom:16px">'+alerts.map(function(a){
+    return '<div style="background:'+(bg[a.type]||bg.warning)+';border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:9px;margin-bottom:7px">'+
+      '<span style="font-size:18px">'+a.icon+'</span>'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text)">'+a.title+'</div><div style="font-size:12px;color:var(--text-muted)">'+a.desc+'</div></div>'+
+      '<span class="badge badge-purple" style="font-size:10px;white-space:nowrap">&#10022; Dynamyc AI</span></div>';
+  }).join('')+'</div>';
+}
+
+function showDetail(id) {
+  currentDetailId=id;
+  const p=projects.find(x=>x.id===id); if(!p) return;
+  const {inv,roi,proi,pay,brr,drift,capitalAtRisk}=calc(p);
+  const h=(p.roiHistory||[]).filter(v=>v!==null);
+  const gap=(p.plannedValue||p.value)-p.value;
+  const prog=p.target!==p.baseline?Math.min(Math.max((p.current-p.baseline)/(p.target-p.baseline)*100,0),100):50;
+  const bc=brr>=90?'#065F46':brr>=70?'#92400E':'#991B1B';
+  const bbg=brr>=90?'var(--emerald-light)':brr>=70?'var(--amber-light)':'var(--red-light)';
+  const vi=roi>=100?{l:'Excellent',c:'var(--emerald)',bg:'var(--emerald-light)',i:'🚀',d:'Outstanding return. Scale this investment.'}
+    :roi>=50?{l:'Good',c:'var(--blue)',bg:'var(--blue-light)',i:'✅',d:'Solid performance. Optimize for further gains.'}
+    :roi>=20?{l:'Fair',c:'var(--amber)',bg:'var(--amber-light)',i:'⚠️',d:'Marginal returns. Review and improve.'}
+    :{l:'Needs Review',c:'var(--red)',bg:'var(--red-light)',i:'🚨',d:'Below threshold. Urgent review required.'};
+  const pAlerts=AI_ALERTS.filter(a=>a.pid===id&&!dismissed.includes(a.id));
+  const si=STRATEGIC_INITIATIVES.find(i=>i.projectIds.includes(id));
+  const kpiCat=KPI_CATEGORIES.find(k=>k.id===p.kpiCategory?.toLowerCase().split(' ')[0])||KPI_CATEGORIES.find(k=>k.name===p.kpiCategory)||null;
+  const vendorTool=AI_TOOLS.find(t=>t.name.toLowerCase().includes(p.name.toLowerCase().split(' ')[0]));
+
+  set('detail-content',`
+    <div class="detail-header">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap">
+            <span class="badge ${cb(p.category)}">${p.category}</span>
+            <span class="badge ${sb(p.status)}">${p.status}</span>
+            ${p.source?`<span class="badge badge-teal">📡 ${p.source}</span>`:''}
+            ${si?`<span class="badge badge-gold">◆ ${si.name}</span>`:''}
+          </div>
+          <h2 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);margin-bottom:3px">${p.name}</h2>
+          <div style="font-size:12.5px;color:var(--text-muted)">${p.desc}</div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:5px">Owner: <strong>${p.owner}</strong> · Started: <strong>${p.start}</strong> · Horizon: <strong>${p.horizon}</strong>${p.adoptionPct!=null?` · Adoption: <strong style="color:${p.adoptionPct>=75?'var(--emerald)':p.adoptionPct>=50?'var(--amber)':'var(--red)'}">${p.adoptionPct}%</strong>`:''}</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="showPage('projects')">← Back</button>
+      </div>
+    </div>
+
+    ${renderAlertBanners(pAlerts)}
+
+    <div class="kpi-mini-row">
+      <div class="kpi-mini"><div class="kpi-mini-label">Annual Investment</div><div class="kpi-mini-value">${f$(inv)}</div></div>
+      <div class="kpi-mini"><div class="kpi-mini-label">Planned Value</div><div class="kpi-mini-value" style="color:var(--navy-light)">${f$(p.plannedValue||p.value)}</div></div>
+      <div class="kpi-mini"><div class="kpi-mini-label">Realized Value</div><div class="kpi-mini-value" style="color:var(--emerald)">${f$(p.value)}</div></div>
+      <div class="kpi-mini"><div class="kpi-mini-label">Realized ROI</div><div class="kpi-mini-value" style="color:${rc(roi)}">${fR(roi)}</div></div>
+      <div class="kpi-mini"><div class="kpi-mini-label">Capital at Risk</div><div class="kpi-mini-value" style="color:${capitalAtRisk>0?'var(--red)':'var(--emerald)'}">${capitalAtRisk>0?f$(capitalAtRisk):'None'}</div></div>
+    </div>
+
+    <div class="detail-tabs">
+      <div class="detail-tab active" onclick="switchTab(this,'tab-overview')">Overview</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-business-case')">Business Case</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-milestones')">Milestones ${milestoneBadge(p)}</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-risk')">Risk Signals ${riskBadge(p)}</div>
+      <div class="detail-tab" onclick="switchTab(this,'tab-resolution')">Resolution Actions ${resolutionBadge(p)}</div>
+    </div>
+
+    <!-- TAB: OVERVIEW -->
+    <div class="detail-tab-content active" id="tab-overview">
+      <div class="grid-2 mb-16">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Benefit Realization</span><span class="text-muted">Planned vs. Actual</span></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+              <div style="text-align:center;padding:10px;background:var(--slate-light);border-radius:8px"><div style="font-size:10.5px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:3px">Planned</div><div style="font-size:18px;font-weight:700;color:var(--navy);font-family:'DM Serif Display',serif">${f$(p.plannedValue||p.value)}</div></div>
+              <div style="text-align:center;padding:10px;background:var(--emerald-light);border-radius:8px"><div style="font-size:10.5px;color:#065F46;font-weight:600;text-transform:uppercase;margin-bottom:3px">Realized</div><div style="font-size:18px;font-weight:700;color:#065F46;font-family:'DM Serif Display',serif">${f$(p.value)}</div></div>
+              <div style="text-align:center;padding:10px;background:${gap>0?'var(--red-light)':'var(--emerald-light)'};border-radius:8px"><div style="font-size:10.5px;color:${gap>0?'#991B1B':'#065F46'};font-weight:600;text-transform:uppercase;margin-bottom:3px">Gap</div><div style="font-size:18px;font-weight:700;color:${gap>0?'#991B1B':'#065F46'};font-family:'DM Serif Display',serif">${gap>0?'−':'+'}${f$(Math.abs(gap))}</div></div>
+            </div>
+            <div style="margin-bottom:7px">
+              <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:5px"><span style="color:var(--text-muted)">Benefit Realization Rate</span><span style="font-weight:700;color:${bc}">${Math.round(brr)}%</span></div>
+              <div class="pvr-bar" style="height:20px"><div class="pvr-realized" style="width:${Math.min(brr,100)}%"></div><span class="pvr-bar-label">${Math.round(brr)}% realized</span></div>
+            </div>
+            <div style="background:${bbg};border-radius:8px;padding:10px 13px;font-size:12.5px;font-weight:700;color:${bc}">
+              ${brr>=90?'✅ On target — tracking to plan':brr>=70?'⚠️ Behind plan — acceleration needed':'🚨 Significant shortfall — recovery plan required'}
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">ROI Trajectory</span><span class="text-muted">${driftBadge(drift)} 90-day drift</span></div>
+          <div class="card-body" style="padding:14px 16px">
+            <canvas id="traj-chart" height="165"></canvas>
+            <div style="margin-top:9px;display:flex;justify-content:space-between;font-size:11.5px">
+              <span style="color:var(--text-muted)">Planned ROI: <strong style="color:var(--navy)">${fR(proi)}</strong></span>
+              <span style="color:var(--text-muted)">Current ROI: <strong style="color:${rc(roi)}">${fR(roi)}</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2 mb-16">
+        <div class="card">
+          <div class="card-header"><span class="card-title">KPI Progress</span><span class="text-muted">${kpiCat?kpiCat.icon+' '+kpiCat.name:'—'}</span></div>
+          <div class="card-body">
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);margin-bottom:5px"><span>Baseline: ${p.baseline} ${p.unit}</span><span>Target: ${p.target} ${p.unit}</span></div>
+            <div class="progress-wrap"><div class="progress-fill" style="width:${prog}%;background:${rc(roi)}"></div></div>
+            <div style="text-align:center;margin-top:7px;font-size:13px">Current: <strong>${p.current} ${p.unit}</strong> · ${Math.round(prog)}% to target</div>
+            ${p.kpiMethod?`<div style="margin-top:8px;font-size:11.5px;color:var(--text-muted)">Measurement: <strong>${p.kpiMethod}</strong></div>`:''}
+            <div style="margin-top:6px;font-size:11.5px;color:var(--text-muted)">Confidence: <strong>${p.confidence}</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Dynamyc AI Assessment</span></div>
+          <div class="card-body">
+            <div style="font-size:13px;line-height:1.7;color:var(--text);margin-bottom:14px">
+              Delivered ${f$(p.value)} against a ${f$(p.plannedValue||p.value)} plan — <strong>${Math.round(brr)}% BRR</strong>. Realized ROI is <strong style="color:${rc(roi)}">${fR(roi)}</strong> vs. planned <strong>${fR(proi)}</strong>.
+              ${drift<-10?`ROI eroding at <strong style="color:var(--red)">${Math.round(drift)}%</strong> over 90 days.`:drift>10?`ROI improving at <strong style="color:var(--emerald)">+${Math.round(drift)}%</strong> over 90 days.`:'ROI trajectory is stable.'}
+              ${capitalAtRisk>0?`<span style="color:var(--red)"> <strong>${f$(capitalAtRisk)}</strong> of capital is at risk of non-recovery.</span>`:''}
+            </div>
+            <div class="verdict-box" style="background:${vi.bg}"><div class="verdict-icon">${vi.i}</div><div><div class="verdict-label" style="color:${vi.c}">${vi.l}</div><div class="verdict-desc" style="color:${vi.c}">${vi.d}</div></div></div>
+          </div>
+        </div>
+      </div>
+      ${vendorTool?`<div class="card mb-16">
+        <div class="card-header"><span class="card-title">🤖 Vendor ROI vs. Dynamyc Measurement</span><span class="text-muted">${vendorTool.name}</span></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:center">
+            <div style="text-align:center;padding:14px;background:var(--amber-light);border-radius:10px">
+              <div style="font-size:10.5px;font-weight:700;color:#92400E;text-transform:uppercase;margin-bottom:4px">Vendor Claims</div>
+              <div style="font-size:28px;font-weight:700;color:#92400E;font-family:'DM Serif Display',serif">${vendorTool.vendorROI||'N/A'}%</div>
+              <div style="font-size:11px;color:#92400E;margin-top:3px">${vendorTool.vendor} self-reported</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:28px">⚡</div>
+              <div style="font-size:11px;font-weight:700;color:${vendorTool.vendorROI-vendorTool.dynamycROI>0?'var(--red)':'var(--emerald)'}">${vendorTool.vendorROI?Math.abs(vendorTool.vendorROI-vendorTool.dynamycROI)+'% '+(vendorTool.vendorROI>vendorTool.dynamycROI?'overstated':'understated'):'—'}</div>
+            </div>
+            <div style="text-align:center;padding:14px;background:var(--emerald-light);border-radius:10px">
+              <div style="font-size:10.5px;font-weight:700;color:#065F46;text-transform:uppercase;margin-bottom:4px">Dynamyc Measures</div>
+              <div style="font-size:28px;font-weight:700;color:#065F46;font-family:'DM Serif Display',serif">${vendorTool.dynamycROI}%</div>
+              <div style="font-size:11px;color:#065F46;margin-top:3px">Independent measurement</div>
+            </div>
+          </div>
+        </div>
+      </div>`:''}
+    </div>
+
+    <!-- TAB: BUSINESS CASE -->
+    <div class="detail-tab-content" id="tab-business-case">
+      <div class="card mb-16">
+        <div class="card-header">
+          <span class="card-title">Business Case Record</span>
+          <div class="scenario-tabs">
+            <div class="scenario-tab base active" onclick="switchScenario(this,'base')">Base</div>
+            <div class="scenario-tab best" onclick="switchScenario(this,'best')">Best</div>
+            <div class="scenario-tab worst" onclick="switchScenario(this,'worst')">Worst</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="scenario-content">${renderScenario(p,'base')}</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Version History</span><span class="text-muted">Business case evolution</span></div>
+        <div class="card-body" style="padding:0">
+          <div class="table-wrap"><table><thead><tr><th>Version</th><th>Date</th><th>Promised ROI</th><th>Planned Value</th><th>Change</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600">v1.0 — Original</td><td>${p.start}</td><td>${fR(proi)}</td><td>${f$(p.plannedValue||p.value)}</td><td><span class="badge badge-blue">Authorized</span></td></tr>
+            <tr><td style="font-weight:600">v1.1 — Q2 Update</td><td>2024-06-15</td><td>${fR(proi*0.9)}</td><td>${f$((p.plannedValue||p.value)*0.9)}</td><td><span class="badge badge-amber">Revised down</span></td></tr>
+            <tr><td style="font-weight:600">v1.2 — Current</td><td>2024-09-01</td><td>${fR(roi)}</td><td>${f$(p.value)}</td><td><span class="badge ${brr>=90?'badge-green':'badge-red'}">Realized</span></td></tr>
+          </tbody></table>
+        </div></div>
+      </div>
+    </div>
+
+    <!-- TAB: MILESTONES -->
+    <div class="detail-tab-content" id="tab-milestones">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Milestone Tracker</span><span class="text-muted">Financial impact of schedule variance</span></div>
+        <div style="padding:0">
+          ${(p.milestones||[]).length ? (p.milestones||[]).map(m=>{
+            const done=m.done; const missed=!done&&m.baseline<new Date().toISOString().split('T')[0];
+            const atRisk=!done&&!missed;
+            const dotCls=done?'milestone-done':missed?'milestone-missed':'milestone-at-risk';
+            const impact=m.financialImpact;
+            return`<div class="milestone-item">
+              <div class="milestone-dot ${dotCls}"></div>
+              <div class="milestone-timeline" style="flex:1">
+                <div class="milestone-name">${m.name}${m.criticalPath?` <span class="badge badge-red" style="font-size:9px">Critical Path</span>`:''}</div>
+                <div class="milestone-dates">Planned: <strong>${m.baseline}</strong>${m.actual?` · Actual: <strong>${m.actual}</strong>`:''}${missed?' · <span style="color:var(--red);font-weight:600">MISSED</span>':''}</div>
+              </div>
+              ${impact!==0?`<span class="milestone-impact ${impact>0?'impact-neg':'impact-pos'}">${impact>0?'+ Recovered ':'⚠️ '}${f$(Math.abs(impact))}</span>`:`<span class="badge badge-slate" style="font-size:10px">${done?'On time':'Pending'}</span>`}
+            </div>`;
+          }).join('') : '<div style="padding:28px;text-align:center;color:var(--text-muted)">No milestones tracked for this project.</div>'}
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: RISK SIGNALS -->
+    <div class="detail-tab-content" id="tab-risk">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Risk Signals</span><span class="text-muted">Typed signals — schedule drift, budget burn, scope change, adoption, dependency</span></div>
+        <div>
+          ${(p.riskSignals||[]).length ? (p.riskSignals||[]).map(r=>{
+            const sevColor={'Critical':'risk-critical','High':'risk-high','Medium':'risk-medium','Low':'risk-low'}[r.severity]||'risk-low';
+            const sevBadge={'Critical':'badge-red','High':'badge-amber','Medium':'badge-gold','Low':'badge-slate'}[r.severity]||'badge-slate';
+            return`<div class="risk-item">
+              <div class="risk-icon-wrap ${sevColor}">⚑</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+                  <span style="font-weight:700;font-size:13px;color:var(--text)">${r.type}</span>
+                  <span class="badge ${sevBadge}">${r.severity}</span>
+                  ${r.acknowledged?`<span class="badge badge-slate" style="font-size:10px">Acknowledged</span>`:''}
+                </div>
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">${r.desc}</div>
+                <div style="font-size:11.5px;font-weight:700;color:var(--red)">ROI impact: ${f$(r.roiImpact)}</div>
+              </div>
+            </div>`}).join('') : '<div style="padding:28px;text-align:center;color:var(--text-muted)">✅ No active risk signals for this project.</div>'}
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: RESOLUTION ACTIONS -->
+    <div class="detail-tab-content" id="tab-resolution">
+      ${(p.resolutionActions||[]).length ? `
+      <div style="background:var(--purple-light);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+        <div style="font-size:18px">✦</div>
+        <div style="font-size:12.5px;color:var(--purple-mid);font-weight:600">Dynamyc AI has prescribed ${p.resolutionActions.length} resolution action${p.resolutionActions.length>1?'s':''} for this project. Total potential ROI recovery: <strong>${f$(p.resolutionActions.reduce((a,r)=>a+r.roiRecovery,0))}</strong></div>
+      </div>
+      ${(p.resolutionActions||[]).map(r=>`
+        <div class="resolution-card">
+          <div class="resolution-header">
+            <div class="resolution-priority priority-${r.priority}">${r.priority}</div>
+            <div class="resolution-action-title">${r.action}</div>
+            <div class="resolution-recovery"><div class="recovery-val">${f$(r.roiRecovery)}</div><div class="recovery-lbl">potential recovery</div></div>
+          </div>
+          <div class="resolution-desc">${r.desc}</div>
+          <div class="resolution-meta">
+            <span style="font-size:11px;color:var(--text-muted)">Confidence: ${r.confidence}%</span>
+            <div class="confidence-bar"><div class="confidence-fill" style="width:${r.confidence}%"></div></div>
+          </div>
+        </div>`).join('')}` : '<div style="padding:28px;text-align:center;color:var(--text-muted)">No resolution actions prescribed. Project is performing within acceptable parameters.</div>'}
+    </div>
+  `);
+
+  showPage('detail');
+  setTimeout(()=>drawTrajChart(p, h, proi, roi),60);
+}
+
+function renderScenario(p, scenario) {
+  const {inv, roi, proi, pay, brr} = calc(p);
+  const multipliers = {base:{val:1,roi:1,pay:1}, best:{val:1.3,roi:1.4,pay:0.7}, worst:{val:0.65,roi:0.55,pay:1.6}};
+  const m = multipliers[scenario];
+  const sVal = Math.round(p.value * m.val);
+  const sROI = roi * m.roi;
+  const sPay = pay * m.pay;
+  const sBRR = p.plannedValue>0 ? sVal/p.plannedValue*100 : 100;
+  const colors = {base:'var(--navy)',best:'var(--emerald)',worst:'var(--red)'};
+  const c = colors[scenario];
+  return`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+    <div style="text-align:center;padding:12px;background:var(--slate-light);border-radius:8px"><div style="font-size:10.5px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:3px">Annual Investment</div><div style="font-size:18px;font-weight:700;color:var(--navy);font-family:'DM Serif Display',serif">${f$(inv)}</div></div>
+    <div style="text-align:center;padding:12px;background:var(--slate-light);border-radius:8px"><div style="font-size:10.5px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:3px">Projected Value</div><div style="font-size:18px;font-weight:700;color:${c};font-family:'DM Serif Display',serif">${f$(sVal)}</div></div>
+    <div style="text-align:center;padding:12px;background:var(--slate-light);border-radius:8px"><div style="font-size:10.5px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:3px">Projected ROI</div><div style="font-size:18px;font-weight:700;color:${c};font-family:'DM Serif Display',serif">${fR(sROI)}</div></div>
+    <div style="text-align:center;padding:12px;background:var(--slate-light);border-radius:8px"><div style="font-size:10.5px;color:var(--text-muted);font-weight:600;text-transform:uppercase;margin-bottom:3px">Payback Period</div><div style="font-size:18px;font-weight:700;color:${c};font-family:'DM Serif Display',serif">${fP(sPay)}</div></div>
+  </div>
+  <div style="background:${scenario==='base'?'var(--slate-light)':scenario==='best'?'var(--emerald-light)':'var(--red-light)'};border-radius:8px;padding:12px 14px;font-size:12.5px;color:${scenario==='base'?'var(--text-muted)':scenario==='best'?'#065F46':'#991B1B'}">
+    <strong>${scenario==='base'?'Base case':scenario==='best'?'Best case':'Worst case'} assumptions:</strong>
+    ${scenario==='base'?' Current trajectory maintained. No major scope or adoption changes.':scenario==='best'?' Full adoption achieved, scope controlled, additional use cases identified.':' Continued adoption challenges, scope creep, and delayed milestones.'}
+  </div>`;
+}
+
+function switchScenario(tab, scenario) {
+  document.querySelectorAll('.scenario-tab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  const p=projects.find(x=>x.id===currentDetailId)||projects[0];
+  const sc=el('scenario-content');
+  if(sc) sc.innerHTML=renderScenario(p, scenario);
+}
+
+function switchTab(tab, contentId) {
+  document.querySelectorAll('.detail-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.detail-tab-content').forEach(c=>c.classList.remove('active'));
+  tab.classList.add('active');
+  const content=el(contentId);
+  if(content) content.classList.add('active');
+}
+
+function drawTrajChart(p, h, proi, roi) {
+  const tc=el('traj-chart'); if(!tc||h.length<2) return;
+  const tctx=tc.getContext('2d'),TW=tc.offsetWidth||300,TH=165;
+  tc.width=TW; tc.height=TH;
+  const tp={l:34,r:22,t:12,b:22};
+  const allV=[...h,proi],tMin=Math.min(...allV)-10,tMax=Math.max(...allV)+10;
+  const txS=(TW-tp.l-tp.r)/(h.length-1),tyS=(TH-tp.t-tp.b)/(tMax-tMin);
+  tctx.clearRect(0,0,TW,TH);
+  [0,.5,1].forEach(t=>{
+    const y=tp.t+t*(TH-tp.t-tp.b);
+    tctx.beginPath();tctx.strokeStyle='#E2E8F0';tctx.lineWidth=1;tctx.moveTo(tp.l,y);tctx.lineTo(TW-tp.r,y);tctx.stroke();
+    tctx.fillStyle='#94A3B8';tctx.font='10px DM Sans';tctx.textAlign='right';
+    tctx.fillText(Math.round(tMax-t*(tMax-tMin))+'%',tp.l-3,y+4);
+  });
+  const py=TH-tp.b-(proi-tMin)*tyS;
+  tctx.beginPath();tctx.setLineDash([5,4]);tctx.strokeStyle='#CBD5E1';tctx.lineWidth=1.5;tctx.moveTo(tp.l,py);tctx.lineTo(TW-tp.r,py);tctx.stroke();tctx.setLineDash([]);
+  tctx.fillStyle='#94A3B8';tctx.font='10px DM Sans';tctx.textAlign='left';tctx.fillText('Planned '+fR(proi),TW-tp.r-52,py-4);
+  const lc=h[h.length-1]<h[0]?'#DC2626':'#059669';
+  const gr=tctx.createLinearGradient(0,tp.t,0,TH-tp.b);gr.addColorStop(0,lc+'22');gr.addColorStop(1,'transparent');
+  tctx.beginPath();h.forEach((v,i)=>{const x=tp.l+i*txS,y=TH-tp.b-(v-tMin)*tyS;i===0?tctx.moveTo(x,y):tctx.lineTo(x,y)});
+  tctx.lineTo(tp.l+(h.length-1)*txS,TH-tp.b);tctx.lineTo(tp.l,TH-tp.b);tctx.closePath();tctx.fillStyle=gr;tctx.fill();
+  tctx.beginPath();tctx.strokeStyle=lc;tctx.lineWidth=2.5;h.forEach((v,i)=>{const x=tp.l+i*txS,y=TH-tp.b-(v-tMin)*tyS;i===0?tctx.moveTo(x,y):tctx.lineTo(x,y)});tctx.stroke();
+  h.forEach((v,i)=>{tctx.beginPath();tctx.arc(tp.l+i*txS,TH-tp.b-(v-tMin)*tyS,3,0,Math.PI*2);tctx.fillStyle=lc;tctx.fill()});
+}
+
+// ══════ PORTFOLIO ══════
+function renderPortfolio() {
+  const sorted=[...projects].map(p=>({p,...calc(p)})).sort((a,b)=>b.roi-a.roi);
+  const action=d=>{
+    if(d.roi>=80&&d.inv<150000) return '⭐ Scale — high return, add investment';
+    if(d.roi>=80) return '💰 Protect — top performer, maintain';
+    if(d.roi>=20&&d.inv<150000) return '❓ Evaluate — potential to scale';
+    if(d.roi<20&&d.inv>=150000) return '🐕 Review — high cost, low return';
+    return '⚠️ Improve or sunset';
+  };
+  var portRows=sorted.map(function(d,idx){
+    var bc=d.brr>=90?'#065F46':d.brr>=70?'#92400E':'#991B1B';
+    var rCell=d.capitalAtRisk>0?'<span style="font-weight:700;color:var(--red)">'+f$(d.capitalAtRisk)+'</span>':'<span style="color:var(--emerald)">—</span>';
+    return '<tr><td style="font-weight:700;color:var(--text-muted)">#'+(idx+1)+'</td><td><span class="td-name" onclick="showDetail('+d.p.id+')">'+d.p.name+'</span></td><td><span class="badge '+cb(d.p.category)+'">'+d.p.category+'</span></td><td style="font-weight:600">'+f$(d.inv)+'</td><td style="color:var(--text-muted)">'+fR(d.proi)+'</td><td><span class="badge '+rb(d.roi)+'">'+fR(d.roi)+'</span></td><td><span style="font-weight:700;font-size:11.5px;color:'+bc+'">'+Math.round(d.brr)+'%</span></td><td>'+driftBadge(d.drift)+'</td><td>'+rCell+'</td><td><span class="badge '+sb(d.p.status)+'">'+d.p.status+'</span></td><td style="font-size:11.5px;color:var(--text-muted)">'+action(d)+'</td></tr>';
+  }).join('');
+  set('portfolio-table','<table><thead><tr><th>Rank</th><th>Project</th><th>Category</th><th>Investment</th><th>Planned ROI</th><th>Realized ROI</th><th>BRR</th><th>90d Drift</th><th>Capital at Risk</th><th>Status</th><th>Recommended Action</th></tr></thead><tbody>'+portRows+'</tbody></table>');
+}
+
+function drawQuad() {
+  const canvas=el('quadrant-canvas'); if(!canvas) return;
+  const ctx=canvas.getContext('2d'),W=canvas.offsetWidth||500,H=360;
+  canvas.width=W; canvas.height=H;
+  const data=projects.map(p=>({p,...calc(p)}));
+  const maxI=Math.max(...data.map(d=>d.inv));
+  const minR=Math.min(...data.map(d=>d.roi))-20,maxR=Math.max(...data.map(d=>d.roi))+20;
+  const midR=(minR+maxR)/2,midI=maxI/2;
+  const pad={l:48,r:18,t:18,b:38},cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const toX=i=>pad.l+(i/maxI)*cW,toY=r=>pad.t+cH-((r-minR)/(maxR-minR))*cH;
+  ctx.clearRect(0,0,W,H);
+  const midX=toX(midI),midY=toY(midR);
+  [{x:pad.l,y:pad.t,w:midX-pad.l,h:midY-pad.t,fill:'rgba(240,253,244,0.8)',label:'⭐ Stars',lx:pad.l+7,ly:pad.t+16},
+   {x:midX,y:pad.t,w:W-pad.r-midX,h:midY-pad.t,fill:'rgba(239,246,255,0.8)',label:'💰 Cash Cows',lx:midX+7,ly:pad.t+16},
+   {x:pad.l,y:midY,w:midX-pad.l,h:H-pad.b-midY,fill:'rgba(255,251,235,0.8)',label:'❓ Question Marks',lx:pad.l+7,ly:midY+16},
+   {x:midX,y:midY,w:W-pad.r-midX,h:H-pad.b-midY,fill:'rgba(255,241,242,0.8)',label:'🐕 Dogs',lx:midX+7,ly:midY+16}
+  ].forEach(q=>{ctx.fillStyle=q.fill;ctx.fillRect(q.x,q.y,q.w,q.h);ctx.fillStyle='#94A3B8';ctx.font='bold 10.5px DM Sans';ctx.fillText(q.label,q.lx,q.ly)});
+  ctx.strokeStyle='#CBD5E1';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(midX,pad.t);ctx.lineTo(midX,H-pad.b);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(pad.l,midY);ctx.lineTo(W-pad.r,midY);ctx.stroke();
+  ctx.strokeStyle='#94A3B8';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,H-pad.b);ctx.lineTo(W-pad.r,H-pad.b);ctx.stroke();
+  ctx.fillStyle='#64748B';ctx.font='10.5px DM Sans';ctx.textAlign='center';ctx.fillText('Investment Size →',pad.l+cW/2,H-7);
+  ctx.save();ctx.translate(13,pad.t+cH/2);ctx.rotate(-Math.PI/2);ctx.fillText('ROI % →',0,0);ctx.restore();
+  [minR,midR,maxR].forEach(v=>{ctx.fillStyle='#94A3B8';ctx.textAlign='right';ctx.font='10px DM Sans';ctx.fillText(Math.round(v)+'%',pad.l-3,toY(v)+4)});
+  const bubbles=[];
+  data.forEach(d=>{
+    const x=toX(d.inv),y=toY(d.roi),r=10+(d.inv/maxI)*13,color=rc(d.roi);
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color+'33';ctx.fill();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();
+    if(d.drift<-5){ctx.fillStyle='#DC2626';ctx.font='bold 12px DM Sans';ctx.textAlign='center';ctx.fillText('↓',x+r,y-r+1)}
+    else if(d.drift>5){ctx.fillStyle='#059669';ctx.font='bold 12px DM Sans';ctx.textAlign='center';ctx.fillText('↑',x+r,y-r+1)}
+    ctx.fillStyle='#0F2340';ctx.font='bold 9.5px DM Sans';ctx.textAlign='center';
+    ctx.fillText(d.p.name.length>16?d.p.name.substring(0,14)+'…':d.p.name,x,y+r+11);
+    bubbles.push({x,y,r,p:d.p,roi:d.roi,inv:d.inv,brr:d.brr,drift:d.drift});
+  });
+  const tip=el('quad-tooltip');
+  canvas.onmousemove=function(e){
+    const rect=canvas.getBoundingClientRect(),mx=e.clientX-rect.left,my=e.clientY-rect.top;
+    const found=bubbles.find(b=>Math.hypot(mx-b.x,my-b.y)<b.r+6);
+    if(found&&tip){
+      tip.style.display='block';tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-10)+'px';
+      tip.innerHTML=`<div style="font-weight:700;font-size:12.5px;color:var(--navy);margin-bottom:5px">${found.p.name}</div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:2px">ROI: <strong style="color:${rc(found.roi)}">${fR(found.roi)}</strong></div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:2px">Investment: <strong>${f$(found.inv)}</strong></div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-bottom:2px">BRR: <strong>${Math.round(found.brr)}%</strong></div>
+        <div style="font-size:10.5px;color:var(--navy-mid);margin-top:7px;cursor:pointer" onclick="showDetail(${found.p.id})">Click to view detail →</div>`;
+      canvas.style.cursor='pointer';
+    } else {if(tip)tip.style.display='none';canvas.style.cursor='crosshair';}
+  };
+  canvas.onmouseleave=()=>{if(tip)tip.style.display='none'};
+  canvas.onclick=function(e){
+    const rect=canvas.getBoundingClientRect(),mx=e.clientX-rect.left,my=e.clientY-rect.top;
+    bubbles.find(b=>Math.hypot(mx-b.x,my-b.y)<b.r+6)&&showDetail(bubbles.find(b=>Math.hypot(mx-b.x,my-b.y)<b.r+6).p.id);
+  };
+}
+
+// ══════ INTEGRATIONS ══════
+function renderIntegrations() {
+  set('integrations-grid', INTEGRATIONS.map(int=>`
+    <div class="int-card">
+      <div class="int-logo" style="background:${int.connected?'var(--teal-light)':'var(--slate-light)'}">${int.icon}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px">${int.name}</div>
+        <div style="font-size:11.5px;color:var(--text-muted)">${int.desc}</div>
+        ${int.connected?`<div style="font-size:11px;color:var(--teal);font-weight:600;margin-top:3px">✓ ${int.records} · ${int.lastSync}</div>`:`<div style="font-size:11.5px;color:var(--text-muted);margin-top:3px">${int.lastSync}</div>`}
+      </div>
+      <span style="padding:5px 11px;border-radius:20px;font-size:12px;font-weight:700;flex-shrink:0;${int.connected?'background:var(--teal-light);color:#115E59':'background:var(--slate-light);color:#475569'}">
+        ${int.connected?'● Connected':'Connect'}
+      </span>
+    </div>`).join(''));
+  const dc={success:'var(--emerald)',warning:'var(--amber)',critical:'var(--red)',info:'var(--purple)'};
+  set('sync-log', SYNC_LOG.map(e=>`
+    <div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
+      <div style="width:7px;height:7px;border-radius:50%;background:${dc[e.type]||'var(--slate)'};flex-shrink:0;margin-top:4px"></div>
+      <div style="flex:1"><div style="font-size:12.5px;color:var(--text)">${e.event}</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px"><strong>${e.source}</strong> · ${e.time}</div></div>
+    </div>`).join(''));
+}
+
+// ══════ ADD PROJECT — FORM ══════
+function renderKPILibPicker() {
+  set('kpi-lib-picker', KPI_CATEGORIES.map(k=>`
+    <div class="kpi-lib-item ${selectedKpiCategory===k.id?'selected':''}" onclick="selectKpiCat('${k.id}')">
+      <div class="kpi-lib-icon">${k.icon}</div>
+      <div class="kpi-lib-name">${k.name}</div>
+      <div class="kpi-lib-desc">${k.desc}</div>
+    </div>`).join(''));
+}
+
+function selectKpiCat(id) {
+  selectedKpiCategory=id;
+  renderKPILibPicker();
+  const cat=KPI_CATEGORIES.find(k=>k.id===id);
+  const input=el('f-kpi-name');
+  if(input&&cat) input.placeholder=`e.g. ${cat.desc.split(',')[0].toLowerCase()}`;
+}
+
+function populateInitiativeDropdown() {
+  const sel=el('f-initiative'); if(!sel) return;
+  sel.innerHTML=`<option value="">None (standalone project)</option>`+STRATEGIC_INITIATIVES.map(si=>`<option value="${si.id}">${si.name}</option>`).join('');
+}
+
+function renderSteps(n){
+  const steps=['Project Basics','Investment & Costs','KPIs & Benefits'];
+  set('steps-bar',steps.map((s,i)=>{
+    const num=i+1,cls=num<n?'done':num===n?'active':'',lCls=num===n?'active':'',lineCls=num<n?'done':'';
+    return '<div class="step-item"><div class="step-circle '+cls+'">'+( num<n?'✓':num)+'</div><span class="step-label '+lCls+'">'+s+'</span></div>'+(num<steps.length?'<div class="step-line '+lineCls+'"></div>':'')}).join(''));
+}
+
+function goStep(n){
+  if(n>currentStep&&currentStep===1){
+    if(!el('f-name')?.value.trim()){notif('⚠️ Please enter a project name');return}
+    if(!el('f-category')?.value){notif('⚠️ Please select a category');return}
+    if(!el('f-owner')?.value.trim()){notif('⚠️ Please enter an owner');return}
+  }
+  currentStep=n;
+  [1,2,3].forEach(i=>{const s=el('step-'+i);if(s)s.style.display=i===n?'block':'none'});
+  renderSteps(n);
+  if(n===3) renderKPILibPicker();
+}
+
+function resetForm(){
+  currentStep=1; selectedKpiCategory='';
+  ['f-name','f-desc','f-owner','f-kpi-name','f-unit','f-kpi-method'].forEach(id=>{const e=el(id);if(e)e.value=''});
+  ['f-impl','f-recurring','f-hours','f-hourly','f-baseline','f-current','f-target','f-value','f-planned-value'].forEach(id=>{const e=el(id);if(e)e.value=''});
+  ['f-category','f-horizon','f-confidence','f-source','f-initiative'].forEach(id=>{const e=el(id);if(e)e.selectedIndex=0});
+  const s=el('f-start');if(s)s.value=new Date().toISOString().split('T')[0];
+  goStep(1); updateCalc(); populateInitiativeDropdown();
+}
+
+function updateCalc(){
+  const impl=parseFloat(el('f-impl')?.value)||0,rec=parseFloat(el('f-recurring')?.value)||0;
+  const hrs=parseFloat(el('f-hours')?.value)||0,hourly=parseFloat(el('f-hourly')?.value)||75;
+  const staff=hrs*hourly*12,total=impl+rec*12+staff;
+  setText('c-impl',f$(impl));setText('c-recur',f$(rec*12));setText('c-staff',f$(staff));setText('c-total',f$(total));
+}
+
+function updateROI(){
+  const impl=parseFloat(el('f-impl')?.value)||0,rec=parseFloat(el('f-recurring')?.value)||0;
+  const hrs=parseFloat(el('f-hours')?.value)||0,hourly=parseFloat(el('f-hourly')?.value)||75;
+  const invest=impl+rec*12+hrs*hourly*12;
+  const planned=parseFloat(el('f-planned-value')?.value)||0,realized=parseFloat(el('f-value')?.value)||0;
+  setText('r-invest',f$(invest));setText('r-planned',f$(planned));setText('r-value',f$(realized));
+  if(invest>0&&realized>0){
+    const roi=(realized-invest)/invest*100,pay=invest/realized*12,brr=planned>0?realized/planned*100:100;
+    const rEl=el('r-roi');if(rEl){rEl.textContent=fR(roi);rEl.style.color=rc(roi)}
+    setText('r-payback',fP(pay));setText('r-brr',Math.round(brr)+'%');
+    const v=roi>=100?{l:'🚀 Excellent (>100%)',bg:'var(--emerald-light)',c:'#065F46'}:roi>=50?{l:'✅ Good (50–100%)',bg:'var(--blue-light)',c:'#1E40AF'}:roi>=20?{l:'⚠️ Fair (20–50%)',bg:'var(--amber-light)',c:'#92400E'}:{l:'🚨 Needs Review (<20%)',bg:'var(--red-light)',c:'#991B1B'};
+    set('r-verdict',`<div style="background:${v.bg};border-radius:8px;padding:9px 13px;font-weight:700;font-size:12.5px;color:${v.c}">${v.l}</div>`);
+  } else {
+    ['r-roi','r-payback','r-brr'].forEach(id=>setText(id,'—'));set('r-verdict','');
+  }
+}
+
+function saveProject(){
+  const name=el('f-name')?.value.trim(),realized=parseFloat(el('f-value')?.value)||0;
+  const planned=parseFloat(el('f-planned-value')?.value)||realized,kpi=el('f-kpi-name')?.value.trim();
+  if(!name||!kpi||!realized){notif('⚠️ Please complete all required fields');return}
+  const impl=parseFloat(el('f-impl')?.value)||0,rec=parseFloat(el('f-recurring')?.value)||0;
+  const hrs=parseFloat(el('f-hours')?.value)||0,hourly=parseFloat(el('f-hourly')?.value)||75;
+  const invest=impl+rec*12+hrs*hourly*12,initROI=invest>0?(realized-invest)/invest*100:0;
+  const initiativeId=el('f-initiative')?.value||null;
+  const newId=Date.now();
+  if(initiativeId){
+    const si=STRATEGIC_INITIATIVES.find(i=>i.id===initiativeId);
+    if(si&&!si.projectIds.includes(newId)) si.projectIds.push(newId);
+  }
+  projects.push({id:newId,name,desc:el('f-desc')?.value||'',category:el('f-category')?.value||'AI Automation',
+    owner:el('f-owner')?.value||'Unassigned',source:el('f-source')?.value||'',initiativeId,
+    start:el('f-start')?.value||new Date().toISOString().split('T')[0],end:el('f-end')?.value||'',
+    horizon:el('f-horizon')?.value||'Medium (6–18 months)',
+    impl,recurring:rec,hours:hrs,hourly,kpiName:kpi,kpiCategory:KPI_CATEGORIES.find(k=>k.id===selectedKpiCategory)?.name||'Cost Avoidance',
+    kpiMethod:el('f-kpi-method')?.value||'',
+    baseline:parseFloat(el('f-baseline')?.value)||0,current:parseFloat(el('f-current')?.value)||0,
+    target:parseFloat(el('f-target')?.value)||0,unit:el('f-unit')?.value||'',
+    plannedValue:planned,value:realized,confidence:el('f-confidence')?.value||'Medium — estimated with some data',
+    status:'On Track',roiHistory:[Math.round(initROI)],adoptionPct:null,
+    milestones:[],riskSignals:[],resolutionActions:[]});
+  save();notif('✅ Project saved!');setTimeout(()=>showPage('projects'),800);
+}
+
+// ══════ REPORTS ══════
+function openReport(type){
+  const data=projects.map(p=>({p,...calc(p)}));
+  const sorted=[...data].sort((a,b)=>b.roi-a.roi);
+  const tI=data.reduce((a,d)=>a+d.inv,0),tV=data.reduce((a,d)=>a+d.p.value,0);
+  const tP=data.reduce((a,d)=>a+(d.p.plannedValue||d.p.value),0);
+  const tR=data.reduce((a,d)=>a+d.capitalAtRisk,0);
+  const pR=tI>0?(tV-tI)/tI*100:0,pB=tP>0?tV/tP*100:100;
+  const score=portfolioHealthScore(data);
+  const active=AI_ALERTS.filter(a=>!dismissed.includes(a.id));
+  let title='',html='';
+  if(type==='executive'){
+    title='📊 Dynamyc Executive Portfolio Summary';
+    html=`<div class="report-section">
+      <div class="report-section-title">Portfolio Health — Dynamyc Score</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px">
+        ${[{l:'Health Score',v:score+'/100',c:score>=80?'var(--emerald)':score>=65?'var(--amber)':'var(--red)'},{l:'Portfolio ROI',v:fR(pR),c:rc(pR)},{l:'Benefit Realization',v:Math.round(pB)+'%',c:'var(--navy)'},{l:'Capital at Risk',v:f$(tR),c:tR>0?'var(--red)':'var(--emerald)'}].map(k=>`
+        <div style="background:var(--slate-light);border-radius:8px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--text-muted);font-weight:600;text-transform:uppercase">${k.l}</div><div style="font-size:18px;font-weight:700;color:${k.c};font-family:'DM Serif Display',serif">${k.v}</div></div>`).join('')}
+      </div></div>
+      <div class="report-section"><div class="report-section-title">AI Early Warning Summary</div>
+        <div class="report-text">Dynamyc AI detected <strong>${active.filter(a=>a.type==='critical').length} critical signals</strong> and <strong>${active.filter(a=>a.type==='opportunity').length} scale opportunities</strong>. ${active.filter(a=>a.type==='critical').map(a=>`<em>${a.project}</em>`).join(', ')} require immediate C-suite attention.</div></div>
+      <div class="report-section"><div class="report-section-title">Top 3 Performers</div>
+        ${sorted.slice(0,3).map((d,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)"><div><div style="font-weight:600;font-size:13px">${i+1}. ${d.p.name}</div><div style="font-size:11px;color:var(--text-muted)">BRR: ${Math.round(d.brr)}% · ${d.p.category}</div></div><span class="badge ${rb(d.roi)}">${fR(d.roi)}</span></div>`).join('')}</div>
+      <div class="report-section"><div class="report-section-title">Needs Attention</div>
+        ${sorted.slice(-3).reverse().map(d=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)"><div><div style="font-weight:600;font-size:13px">${d.p.name}</div><div style="font-size:11px;color:var(--text-muted)">BRR: ${Math.round(d.brr)}% · Capital at Risk: ${d.capitalAtRisk>0?f$(d.capitalAtRisk):'None'}</div></div><span class="badge ${rb(d.roi)}">${fR(d.roi)}</span></div>`).join('')}</div>
+      <div class="report-section"><div class="report-section-title">Strategic Recommendation</div>
+        <div class="report-text">Portfolio Health Score is <strong>${score}/100</strong>. Portfolio delivers <strong>${fR(pR)}</strong> blended ROI at <strong>${Math.round(pB)}%</strong> benefit realization with <strong style="color:var(--red)">${f$(tR)}</strong> capital at risk. Scale <strong>${sorted[0].p.name}</strong> (${fR(sorted[0].roi)} ROI). Urgently review <strong>${sorted[sorted.length-1].p.name}</strong> — erosion and benefit shortfall require immediate intervention.</div></div>`;
+  }
+  if(type==='scorecard'){
+    const d=sorted[0];title=`📋 Dynamyc Project Scorecard — ${d.p.name}`;
+    html=`<div style="background:var(--slate-light);border-radius:8px;padding:14px;margin-bottom:18px"><div style="font-size:17px;font-weight:700;color:var(--navy);margin-bottom:3px">${d.p.name}</div><div style="font-size:11.5px;color:var(--text-muted)">${d.p.category} · Owner: ${d.p.owner} · Source: ${d.p.source||'Manual'}</div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+        ${[{l:'Realized ROI',v:fR(d.roi),c:rc(d.roi)},{l:'Planned ROI',v:fR(d.proi),c:'var(--navy)'},{l:'Benefit Realization',v:Math.round(d.brr)+'%',c:d.brr>=90?'var(--emerald)':d.brr>=70?'var(--amber)':'var(--red)'},{l:'Annual Investment',v:f$(d.inv),c:'var(--navy)'},{l:'Realized Value',v:f$(d.p.value),c:'var(--emerald)'},{l:'Capital at Risk',v:d.capitalAtRisk>0?f$(d.capitalAtRisk):'None',c:d.capitalAtRisk>0?'var(--red)':'var(--emerald)'}].map(k=>`<div style="background:white;border:1px solid var(--border);border-radius:8px;padding:11px;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">${k.l}</div><div style="font-size:17px;font-weight:700;color:${k.c};margin-top:3px">${k.v}</div></div>`).join('')}
+      </div>
+      <div class="report-section"><div class="report-section-title">Benefit Realization</div><div class="report-text">Planned ${f$(d.p.plannedValue||d.p.value)} · Realized ${f$(d.p.value)} · Gap ${f$(Math.abs((d.p.plannedValue||d.p.value)-d.p.value))} · BRR ${Math.round(d.brr)}%</div></div>
+      <div class="report-section"><div class="report-section-title">KPI Performance</div><div class="report-text">KPI: <strong>${d.p.kpiName}</strong> (${d.p.kpiCategory})<br>Baseline: ${d.p.baseline} ${d.p.unit} → Current: ${d.p.current} ${d.p.unit} → Target: ${d.p.target} ${d.p.unit}<br>Method: ${d.p.kpiMethod||'—'} · Confidence: ${d.p.confidence}</div></div>
+      ${d.p.resolutionActions&&d.p.resolutionActions.length?'<div class="report-section"><div class="report-section-title">Resolution Actions ('+d.p.resolutionActions.length+')</div><div class="report-text">'+d.p.resolutionActions.map((r,idx)=>(idx+1)+'. '+r.action+' - potential recovery '+f$(r.roiRecovery)).join('<br>')+'</div></div>':''}`;
+  }
+  if(type==='forecast'){
+    const d=sorted[0];title=`📈 Dynamyc ROI Forecast — ${d.p.name}`;
+    const mons=['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'];
+    const scenarios={best:d.roi*1.4,base:d.roi,worst:d.roi*0.55};
+    html=`<div class="report-section"><div class="report-section-title">Sensitivity Scenarios — 12-Month Projection</div>
+      ${['best','base','worst'].map(sc=>`<div style="margin-bottom:12px"><div style="font-size:11.5px;font-weight:700;color:${sc==='best'?'var(--emerald)':sc==='base'?'var(--navy)':'var(--red)'};text-transform:uppercase;margin-bottom:6px">${sc.toUpperCase()} CASE</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${mons.map((_,i)=>{const v=scenarios[sc]*(i+1)/12;const vColor=rc(v);const vText=fR(v);return '<div style="flex:1;min-width:50px;text-align:center;background:var(--slate-light);border-radius:5px;padding:6px 4px"><div style="font-size:9.5px;color:var(--text-muted)">'+mons[i]+'</div><div style="font-size:11.5px;font-weight:700;color:'+vColor+'">'+vText+'</div></div>'}).join('')}</div></div>`).join('')}
+    </div>
+    <div class="report-section"><div class="report-section-title">Forecast Summary</div><div class="report-text"><strong>${d.p.name}</strong> reaches full payback in <strong>${fP(d.pay)}</strong> (base case). Best case: ${fR(scenarios.best)} ROI. Worst case: ${fR(scenarios.worst)} ROI. BRR: <strong>${Math.round(d.brr)}%</strong>. ${d.pay<12?'Strong scale candidate.':'Accelerate KPI improvement to shorten payback.'}</div></div>`;
+  }
+  setText('modal-title',title);set('modal-body',html);
+  const mo=el('modal-overlay');if(mo)mo.classList.add('open');
+}
+
+function closeModal(){const mo=el('modal-overlay');if(mo)mo.classList.remove('open')}
+function copyReport(){navigator.clipboard.writeText(el('modal-body')?.innerText||'').then(()=>notif('📋 Copied!'))}
+function notif(msg){const e=el('notification');if(!e)return;e.textContent=msg;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2800)}
+
+// ══════ INIT ══════
+document.addEventListener('DOMContentLoaded',()=>{
+  renderSteps(1);
+  populateInitiativeDropdown();
+  renderDash();
+  const boardToggle=el('board-toggle');
+  if(boardToggle) boardToggle.style.display='flex';
+  window.addEventListener('resize',()=>{
+    if(el('page-dashboard')?.classList.contains('active')) drawTrend();
+    if(el('page-alerts')?.classList.contains('active')) drawErosion();
+  });
+});
+</script>
+</body>
+</html>
